@@ -5,7 +5,7 @@ Este é um "dojo" feito para ensinar lua e LÖVE para os membros da entidade/gru
 
 ## Requisitos prévios
 
-Este curso introdutório assume que o leitor está familiarizado com os conceitos **básicos** de programação (de preferência em C, linguagem ensinada no primeiro semestre de SI), portanto não serão explicadas noções iniciais sobre variáveis, loops, funções, condicionais pointers e etc. No entanto, você não precisa ser o Alan Turing da nova geração para participar do dojo, basta não ter zerado a P1 de IP. Faremos nosso melhor para deixar os conceitos mais difíceis e diferentes do lua o mais claros possíveis.
+Este curso introdutório assume que o leitor está familiarizado com os conceitos **básicos** de programação (de preferência em C, linguagem ensinada no primeiro semestre de SI), portanto não serão explicadas noções iniciais sobre variáveis, loops, funções, condicionais pointers e etc. No entanto, você não precisa ser o Alan Turing da nova geração para participar do dojo, basta não ter zerado a P1 de IP. Faremos nosso melhor para deixar os conceitos mais difíceis e diferentes de lua o mais claros possíveis.
 
 ## Proposta e roadmap
 
