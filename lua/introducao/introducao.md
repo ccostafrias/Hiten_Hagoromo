@@ -273,7 +273,71 @@ print(tableB) -- output: mesmo endereço
 
 Muito provavelmente você ficou com várias curiosidades do tipo "o que acontece se eu fizer X ou Y", então eu recomendo de verdade que você pegue sua IDE e seu terminal e experimente fazer essas coisas você mesmo, esse é o melhor jeito de aprender.
 
-* referências que usei para esta sessão de datatypes:
+referências que usei para esta sessão de datatypes:
 - [http://lua-users.org/wiki/LuaTypesTutorial](http://lua-users.org/wiki/LuaTypesTutorial)
 - [http://lua-users.org/wiki/StringsTutorial](http://lua-users.org/wiki/StringsTutorial)
 - [http://lua-users.org/wiki/TablesTutorial](http://lua-users.org/wiki/TablesTutorial)
+
+## Flow control
+
+Agora vamos pra parte mais divertida; comandos de flow do programa. Como toda boa linguagem de programação, lua tem if/else, for loops e while loops. Assumindo que você já está familiarizado com essas estruturas, vamos passar rapidinho por essa parte só para aprender a sintexe mesmo, já que o funcionamento é igual ao de qualquer outra lingugem.
+
+### Condicionais
+
+Diferentemente de C, que possui apenas as keywords `if` e `else` para criar blocos condicionais, lua tem `if`, `else` e `elseif`. A única diferença aqui é o `elseif`, que equivale a um `else if` do C, como você deve ter adivinhado. Então blocos de condicionais no lua são feitos da seguinte forma:
+
+``` Lua
+a = 0
+b = 1
+
+-- um if sozinho
+if a == 0 then
+	print("a == 0")
+end
+
+-- um if com elseif
+if a == 1 then
+	print("a == 1")
+elseif b == 1 then
+	print("b == 1")
+end
+
+-- if com elseif e else
+if a == 2 then
+	print("a == 2")
+elseif b == 2 then
+	print("b == 2")
+else
+	print("UwU")
+end
+```
+
+então nos casos mais complexos são usadas 5 keywords: `if`, `elseif`, `else`, `then`, `end`. O `end` a gente já viu na declaração de funções, ele delimita o final de um bloco de código, já o `then` simplesmente indica que o bloco que vêm depois dele é executado se a condição anterior a ele for verdadeira. Outra coisa que difere as condicionais do lua com as do C é que em lua nós não usamos simbolos como `!`, `||` e `&&` para designar operadores lógicos, ao invés disso usamos as keywords `not`, `or` e `and`, como neste exemplo:
+
+``` Lua
+-- equivalente a !false
+if not false then
+	print("UwU")
+end
+-- equivalente a true || false
+if true or false then
+	print("OwO")
+end
+-- equivalente a true && true
+if true and true then
+	print("OvO")
+end
+```
+
+Outra coisa curiosa é que em lua o valor `0` não é falsy, ele é truthy (se comporta como `true` em um contexto booleano), ex:
+
+``` Lua
+-- equivalente a !false
+if 0 then
+	print("zero is true") -- é printado
+end
+
+if not 0 then
+	print("zero is false") -- não é printado
+end
+```
