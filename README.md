@@ -27,6 +27,7 @@ Eu, Jonyski, estou escrevendo o conteúdo deste dojo ENQUANTO aprendo sobre lua 
 
 - Manual de referência oficial de lua: [https://www.lua.org/manual/5.4/](https://www.lua.org/manual/5.4/)
 - Tutoriais oficiais de lua [http://lua-users.org/wiki/TutorialDirectory](http://lua-users.org/wiki/TutorialDirectory)
+- Documentação oficial do LÖVE [https://love2d.org/wiki/love](https://love2d.org/wiki/love)
 - Playlist de introdução a LÖVE [https://www.youtube.com/watch?v=kpxkQldiNPU&list=PLqPLyUreLV8DrLcLvQQ64Uz_h_JGLgGg2](https://www.youtube.com/watch?v=kpxkQldiNPU&list=PLqPLyUreLV8DrLcLvQQ64Uz_h_JGLgGg2)
 - Crash course de LÖVE [https://www.youtube.com/watch?v=I549C6SmUnk](https://www.youtube.com/watch?v=I549C6SmUnk)
 - E é claro, conversas intermináveis com o chatGPT
