@@ -100,7 +100,7 @@ A sintaxe `..` junta duas strings, e a função string.sub() recebe 3 argumentos
 
 O `nil` seria mais ou menos equivalente ao `NULL` do C, ele representa algo que não existe, e suas principais características são: ser diferente de todos os outros valores e ser _falsy_. Na programação chamamos um valor de falsy se em um contexto booleano ele se comporta como o `false`.
 
-### Funtion
+### Function
 
 Ué, funções são... um tipo de dado? SIM! em lua (mas não apenas em lua) funções são _first class citizens_ (cidadões de primeira classe), isso basicamente significa que elas podem ser atribuidas à uma variável, podem ser passadas como parâmetros para outras funções e podem ser retornadas de funções. Muito pog. Em lua nós declaramos uma função assim:
 
@@ -123,7 +123,7 @@ sum = function(a, b)
 end
 ```
 
-não importa como você define ela, ela pode ser tratada como uma variável de qualquer forma, bora criar uma função que recebe uma função como argumento só pra demonstrar aqui:
+não importa como você declara ela, ela pode ser tratada como uma variável de qualquer forma. Bora criar uma função que recebe uma função como argumento só pra demonstrar aqui:
 
 ``` Lua
 function sum(a, b)
@@ -139,3 +139,141 @@ print(recievesFunction(sum, 700, 27))
 ```
 
 neste exemplo a função `recievesFunction` recebe 3 argumentos, uma função e duas variáveis, e então chama a função recebida passando as duas variáveis como argumento. O ponto é, nós passamos a função `sum` como argumento para `recievesFunction` como se ela fosse uma variável, mas ela **É** uma variável, então está tudo nas conformidades.
+
+### Table
+
+Table, ou tabela em português, é o tipo de dado _não primitivo_ principal do lua. Tudo aquilo que você faria com arrays, structs, objetos, dicionários ou sets em outras linguagens você faz com tabelas em lua.
+
+Já que as tabelas são tão versáteis, vamos ver os vários jeitos de usar elas um de cada vez, começando com o jeito de usar elas como arrays. Veja como `myTable` é declarada aqui:
+
+``` Lua
+myTable = {1, 1, 2, 3, 5, 8, 13, 21}
+```
+
+Muito parecida com a declaração de arrays no C, né? o jeito de acessar um elemento (indexar a array) também é praticamente igual, com a única diferença sendo que os índices de tables no lua começam em 1 ao invés de 0:
+
+``` Lua
+myTable = {1, 1, 2, 3, 5, 8, 13, 21}
+print(myTable[1]) -- output: 1
+print(myTable[2]) -- output: 1
+print(myTable[3]) -- output: 2
+print(myTable[4]) -- output: 3
+print(myTable[5]) -- output: 5
+print(myTable[6]) -- output: 8
+```
+
+Se quisermos acessar o último elemento da tabela podemos usar o operador `#` para pegar o tamanho (número de elementos) da tabela e então usar esse número para indexar a própria tabela. ps: o # também funciona para pegar o tamanho de uma string:
+
+``` Lua
+myTable = {1, 1, 2, 3, 5, 8, 13, 21}
+myString = "pirataria"
+print(myTable[#myTable]) -- output: 21
+print(#myString) -- output: 9
+```
+
+Blz, agora pra continuar a analogia com o C, bora usar a table como se fosse uma struct. Para isso, a gente vai criar **associações entre chaves e valores** (keys e values). As chaves são basicamente equivalentes ao nome de uma propriedade em C, enquanto os valores são aquilo que é guardado na propriedade (no caso de lua, aquilo que é associado à uma chave). Vou botar uma comparação aqui de estruturas equivalentes nas duas linguagens:
+
+``` C
+// Cat struct in C
+struct Cat {
+	char name[10];
+	short int age;
+};
+
+struct Cat myCat = {.name = "Kira", .age = 6};
+
+printf("%s is %d years old\n", myCat.name, myCat.age);
+```
+
+``` Lua
+-- myCat table in lua
+myCat = {name = "Kira", age = 6}
+
+print(myCat.name .. " is " .. myCat.age .. " years old")
+```
+
+Veja só, a estrutura `myCat` no C tem duas propriedades: `name` e `age`, o mesmo vale para a table do lua, o que a gente fez ali foi criar uma table com as chaves `name` e `age` e associar elas com os valores `"kira"` e `6`. A forma de acessar o valor associado a uma chave é usando a sintaxe `tableName.key`, mas há outras formas também:
+
+``` Lua
+myCat = {name = "Kira", age = 6}
+print(myCat["name"])
+```
+
+Isto é por que `{name = "Kira"}` é a mesma coisa que `{["name"] = "Kira"}`, só que mais bonitinho.
+
+Tenha em mente que qualquer coisa pode ser uma chave. **QUALQUER COISA** (exceto `nil` e NaN). Por exemplo, aqui está uma struct que usa vários tipos de dado como chaves:
+
+``` Lua
+function myFunc(a, b)
+	return nil
+end
+
+crazyTable = {name = "conway", [10] = "quack!", [myFunc] = 1, [false] = "wasd"}
+print(crazyTable["name"]) -- output: conway
+print(crazyTable[10]) -- output: quack!
+print(crazyTable[myFunc]) -- output: 1
+print(crazyTable[false]) -- output: wasd
+```
+
+E se você quiser adicionar um valor novo na tabela depois dela ser criada? é só fazer o seguinte:
+
+``` Lua
+myTable = {}
+myTable[1] = 9000
+myTable["idk"] = 7
+-- etc
+print(myTable[1]) -- 9000
+print(myTable.idk) -- 7
+```
+
+E para deletar um valor podemos usar o método `table.remove()`:
+
+``` Lua
+pairNums = {2, 4, 6, 8, 10}
+print(pairNums[1]) -- 2
+print(pairNums[2]) -- 4
+print(pairNums[3]) -- 6
+print(pairNums[4]) -- 8
+print(pairNums[5]) -- 10
+
+table.remove(pairNums, 3) -- removendo o valor no index 3
+
+print(pairNums[1]) -- 2
+print(pairNums[2]) -- 4
+print(pairNums[3]) -- 8
+print(pairNums[4]) -- 10
+print(pairNums[5]) -- não existe mais, agora pairNums só tem 4 elementos
+```
+
+Agora pra gente finalizar esse papo de table (e data types) você precisa saber que as tables, diferentemente de números ou strings, são passadas como referência quando usadas como parâmetro ou atribuídas a outras variáveis. Se você não sabe o que "ser passada como referência" significa, é mais ou menos assim: o valor guardado em uma variável do tipo table não é a tabela em si, mas uma referência para a tabela, um pointer. Então quando você faz algo do tipo
+
+``` Lua
+tableA = {5, 4, 3, 2, 1}
+tableB = tableA
+tableB[1] = 10
+```
+
+você não tem duas tables diferentes `tableA` e `tableB`, você tem uma table só e duas referências pra ela; dois pointer para ela. Então quando você modifica a `tableB` você também está por consequência modificando a `tableA`. Se você não prestar atenção nisso vários bugs sinistros podem surgir sem você entender o por quê. Demonstração:
+
+``` Lua
+tableA = {5, 4, 3, 2, 1}
+tableB = tableA
+tableB[1] = 10
+print(tableA[1]) -- output: 10
+```
+
+Você também pode confirmar isso printando a tabela em si, o que vai resultar em um endereço de memória sendo printado:
+
+``` Lua
+tableA = {5, 4, 3, 2, 1}
+tableB = tableA
+print(tableA) -- output: endereço de memória, ex: 0x62e3eae1df60
+print(tableB) -- output: mesmo endereço
+```
+
+Muito provavelmente você ficou com várias curiosidades do tipo "o que acontece se eu fizer X ou Y", então eu recomendo de verdade que você pegue sua IDE e seu terminal e experimente fazer essas coisas você mesmo, esse é o melhor jeito de aprender.
+
+* referências que usei para esta sessão de datatypes:
+- [http://lua-users.org/wiki/LuaTypesTutorial](http://lua-users.org/wiki/LuaTypesTutorial)
+- [http://lua-users.org/wiki/StringsTutorial](http://lua-users.org/wiki/StringsTutorial)
+- [http://lua-users.org/wiki/TablesTutorial](http://lua-users.org/wiki/TablesTutorial)
