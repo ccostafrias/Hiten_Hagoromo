@@ -174,7 +174,7 @@ print(#myString) -- output: 9
 Blz, agora pra continuar a analogia com o C, bora usar a table como se fosse uma struct. Para isso, a gente vai criar **associações entre chaves e valores** (keys e values). As chaves são basicamente equivalentes ao nome de uma propriedade em C, enquanto os valores são aquilo que é guardado na propriedade (no caso de lua, aquilo que é associado à uma chave). Vou botar uma comparação aqui de estruturas equivalentes nas duas linguagens:
 
 ``` C
-// Cat struct in C
+// Cat struct em C
 struct Cat {
 	char name[10];
 	short int age;
@@ -332,7 +332,6 @@ end
 Outra coisa curiosa é que em lua o valor `0` não é falsy, ele é truthy (se comporta como `true` em um contexto booleano), ex:
 
 ``` Lua
--- equivalente a !false
 if 0 then
 	print("zero is true") -- é printado
 end
@@ -341,3 +340,171 @@ if not 0 then
 	print("zero is false") -- não é printado
 end
 ```
+
+### Loops
+
+Vamos começar pelo mais simples, o `while` loop. Ele é extremamente parecido com o do C, olha só:
+
+``` Lua
+a = 2
+while a <= 1024 do
+	print(a)
+	a = a * 2
+end
+```
+
+esse loop vai executar o bloco de código dentro dele até que a condição determinada (`a <= 1024` neste caso) seja falsa. A única coisa que eu acho bom que não passe despercebida é o uso da  keyword `do`.
+
+Outro tipo de loop é o `repeat until`. Ele funciona de uma forma parecida ao `do while` loop do C, mas ao contrário. Leia esse exemplo e depois eu explico:
+
+``` Lua
+a = 2
+repeat
+	print(a)
+	a = a * 2
+until a > 1024
+```
+
+Esse bloco entre o `repeat` e o `until` vai rodar pelo menos uma vez e continuará rodando até que a condição que vem depois do `until` se torne **verdadeira**. Mas por que isso é o contrário do `do while` no C? é porque o `do while` roda até que a condição que vêm depois do `while` se torne **falsa**.
+
+Por último temos o `for` loop, que em lua é consideravelmente diferente daquele em C. A sintaxe é mais ou menos assim:
+
+``` Lua
+for i = initialValue, stopValue, step do
+	-- faz algo
+end
+```
+
+O que equivaleria ao seguinte loop em C:
+
+``` C
+for(int i = initialValue; i <= stopValue; i += step){
+	// faz algo
+}
+```
+
+Obviamente `initialValue`, `stopValue` e `step` deveriam ser números, estes nomes estão aí só de exemplo. Aqui vai um loop de verdade:
+
+``` Lua
+for i = 0, 10, 2 do
+	print(i) -- output: 0, 2, 4, 6, 8, 10
+end
+```
+
+Mas desse jeito a gente só tem loops que incrementam o `i` e param quando ele é maior do que um determinado valor, e se nós quisermos um `i` que é decrementado e que o loop pare quando `i` for menor que algum valor? Nesse caso é só usar um step negativo:
+
+``` Lua
+for i = 10, 0, -2 do
+	print(i) -- output: 10, 8, 6, 4, 2, 0
+end
+```
+
+Por último, a gente também pode usar o for loop para iterar pelas entradas de uma tabela com as funções `ipairs()` ou `pairs()`, que geram um iterador a partir da tabela que elas recebem como argumento (a diferença entre as duas é que `ipairs()` só funciona quando as chaves da tabela são números), saca só:
+
+``` Lua
+someTable = {name = "Orimoto", age = 65, course = "SI"}
+
+for key, value in pairs(someTable) do
+	print(key .. ": " .. value)
+end
+
+--[[
+	output:
+	age: 65
+	course: SI
+	name: Orimoto
+]]--
+```
+
+Note que o output não está na ordem, isso é porque tabelas que não estão sendo usadas como arrays mas sim como objetos não são ordenadas. Também note que usamos a keyword `in` neste caso, que serve para navegar pelos elementos de um iterador.
+
+Agora, caso você queira sair de um loop prematuramente em alguma situação específica, você pode usar o comando `break`. Ele funciona igual ao do C, simplesmente para a execução da iteração atual e pula pra próxima linha fora do loop. Exemplo:
+
+``` Lua
+for i = 1, 100, 1 do
+	print(i .. " OwO")
+	if i % 11 == 0 then
+		break
+	end
+	print(i .. " UwU")
+end
+```
+
+Este loop vai ser interrompido quando `i` for 11 antes que o décimo primeiro UwU seja printado (não me pergunte qual é o sentido desse exemplo, apenas aceite).
+
+Referência usada para esta sessão de flow control:
+- [http://lua-users.org/wiki/ControlStructureTutorial](http://lua-users.org/wiki/ControlStructureTutorial)
+
+## Escopos
+
+Eu não sei se você percebeu mas a gente já aprendeu como usar 20 das 21 keywords do lua, incrível. A única que falta é a `local`, e essa keyword tem tudo a ver com escopos. Em IP você deve ter aprendido que as variáveis em C só são válidas no escopo em que elas são criadas e em seus escopos internos. Ou seja, uma variável criada no escopo global é válida em qualquer lugar, uma variável criada dentro de um loop é válida apenas dentro do loop, e uma criada dentro de uma função é válida só dentro da função, etc (ignorando, é claro, variáveis alocadas manualmente, que só deixam de ser válidas quando passadas pro `free()`). No lua é diferente, por padrão toda variável que você cria é global, e o único jeito de limitar elas a um escopo é com a keyword `local`. Para entendermos melhor, vamos ver duas situações: uma com o uso de `local` e outra sem.
+
+``` Lua
+-- cria uma tabela com 3 elementos e retorna a soma deles
+function createTable(a, b, c)
+	someTable = {a, b, c}
+	return a + b + c
+end
+
+createTable(5, 10, 15)
+
+print(someTable[1]) -- output: 5
+print(someTable[2]) -- output: 10
+print(someTable[3]) -- output: 15
+```
+
+Neste caso acima, no qual a gente não usa a keyword `local`, a tabela e seus elementos pode ser acessada mesmo fora do escopo onde ela foi criada: o escopo da função `createTable`.
+
+``` Lua
+-- cria uma tabela com 3 elementos e retorna a soma deles
+function createTable(a, b, c)
+	local someTable = {a, b, c}
+	return a + b + c
+end
+
+createTable(5, 10, 15)
+
+print(someTable[1]) -- ERRO: attempt to index a nil value (global 'someTable')
+```
+
+Mas neste caso, no qual a gente usa a keyword `local`, a tabela deixa de existir assim que a gente sai do escopo da função, e portanto tentar acessar seus elementos causa um erro. Isso é muito bom pois a gente pode controlar quais variáveis pertencem a quais áreas do nosso código, além de evitar possíveis conflitos de nomes de variáveis ou alguns bugs sorrateiros. Minha dica para caso você não saiba quando usar `local` é que você use ele por padrão em toda variável, e só deixe de usar quando você **quiser** ou **precisar** que uma variável seja "omnipresente" no seu código (ênfase no quiser).
+
+Você também pode criar funções locais, e isso é considerado boa prática:
+
+``` Lua
+local function divide(a, b)
+	return a / b
+end
+```
+
+Algo interessante também é que tudo isso pode ser usado para criar _closures_, um tipo de função que é muito comum no paradigma de programação funcional. Uma closure é uma função que "se lembra" das variáveis locais do escopo onde ela foi criada, mesmo depois que o escopo já acabou. Por exemplo, vamos criar uma função `createCounter()` que define uma variável local `counter` e uma função local `increment()`, que vai incrementar a variável `counter`. `increment()` será nossa closure, e a função `createCounter()` retornará essa closure. Assim, quando a gente chamar `createCounter()` e mesmo depois de seu escopo ser extinto, `increment()` ainda terá acesso à variável local `counter`, ela "se lembrará" de uma variável que já devia ter sumido.
+
+``` Lua
+function createCounter()
+	local counter = 0
+
+	local function increment()
+		counter = counter + 1
+		print(counter)
+	end
+
+	return increment
+end
+-- newCounter recebe uma closure
+newCounter = createCounter()
+newCounter() -- output: 1
+newCounter() -- output: 2
+newCounter() -- output: 3
+-- otherCounter recebe outra closure
+otherCounter = createCounter()
+otherCounter() -- output: 1
+otherCounter() -- output: 2
+-- o counter de otherCounter não afeta o counter do newCounter
+-- e vice versa
+newCounter() -- output: 4
+newCounter() -- output: 5
+otherCounter() -- output: 3
+```
+
+Referência para esta parte de escopos
+- [http://lua-users.org/wiki/ScopeTutorial](http://lua-users.org/wiki/ScopeTutorial)
