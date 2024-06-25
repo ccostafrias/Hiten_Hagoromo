@@ -35,6 +35,35 @@ Muito massa, né? Outras coisas notáveis de lua são o fato dela ser incrivelme
 
 Beleza, até o fim dessa sessão do dojo você vai saber o que cada uma delas faz. Mas agora chega de papo, vamos lutar (ou melhor, aprender).
 
+## Instalando lua
+
+Se você está em um sistema linux basta usar os seguintes 4 comandos:
+
+``` shell
+curl -L -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
+tar zxf lua-5.4.6.tar.gz
+cd lua-5.4.6
+make all test
+```
+
+para confirmar que deu tudo certo, use `lua -v` e o output será a versão que está instalada.
+
+Se você está em um sistema windows:
+
+- acesse este [link](https://luabinaries.sourceforge.net/)
+- scrolla pra baixo e seleciona versão que você quer instalar
+- vai na pastinha "Tools Executables" que aparecer
+- baixe ou a Win32_bin.zip ou a Win64_bin.zip, a depender da sua máquina
+- extraia o zip
+- coloque a pasta contendo os .exe na sua variável PATH (se não souber fazer isso, siga este [passo a passo](https://stackoverflow.com/questions/44272416/how-to-add-a-folder-to-path-environment-variable-in-windows-10-with-screensho) do stackoverflow)
+
+Se você está no MacOS, instale o brew se ele não estiver instalado e use:
+
+``` shell
+brew update
+brew install lua
+```
+
 ## Variáveis e Data Types
 
 Quais são os tipos de dado que o lua nos oferece? Você provavelmente está familiarizado com os data types do C, como int, char, float, double (os quatro tipos primitivos do C), pointers, structs, arrays, e etc. Então, os tipos do lua não são tão diferentes, nós temos 8 deles no total, que são:
@@ -477,12 +506,13 @@ local function divide(a, b)
 end
 ```
 
-Algo interessante também é que tudo isso pode ser usado para criar _closures_, um tipo de função que é muito comum no paradigma de programação funcional. Uma closure é uma função que "se lembra" das variáveis locais do escopo onde ela foi criada, mesmo depois que o escopo já acabou. Por exemplo, vamos criar uma função `createCounter()` que define uma variável local `counter` e uma função local `increment()`, que vai incrementar a variável `counter`. `increment()` será nossa closure, e a função `createCounter()` retornará essa closure. Assim, quando a gente chamar `createCounter()` e mesmo depois de seu escopo ser extinto, `increment()` ainda terá acesso à variável local `counter`, ela "se lembrará" de uma variável que já devia ter sumido.
+Algo interessante também é que tudo isso pode ser usado para criar _closures_, um tipo de função que é muito comum no paradigma de programação funcional. Uma closure é uma função que "se lembra" das variáveis locais do escopo onde ela foi criada, mesmo depois que o escopo já acabou. Por exemplo, vamos criar uma função `createCounter()` que define uma variável local `counter` e uma função local `increment()`, que vai incrementar a variável `counter`. `increment()` será nossa closure, e a função `createCounter()` retornará essa closure. Assim, quando a gente chamar `createCounter()`, e mesmo depois de seu escopo ser extinto, `increment()` ainda terá acesso à variável local `counter`; ela "se lembrará" de uma variável que já devia ter sumido.
 
 ``` Lua
 function createCounter()
 	local counter = 0
 
+	-- increment é uma closure
 	local function increment()
 		counter = counter + 1
 		print(counter)
