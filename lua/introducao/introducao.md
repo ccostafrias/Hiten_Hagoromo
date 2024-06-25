@@ -37,7 +37,7 @@ Beleza, até o fim dessa sessão do dojo você vai saber o que cada uma delas fa
 
 ## Instalando lua
 
-Se você está em um sistema linux basta usar os seguintes 4 comandos:
+Se você está em um sistema **Linux** basta usar os seguintes 4 comandos:
 
 ``` shell
 curl -L -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz
@@ -48,7 +48,7 @@ make all test
 
 para confirmar que deu tudo certo, use `lua -v` e o output será a versão que está instalada.
 
-Se você está em um sistema windows:
+Se você está em um sistema **Windows**:
 
 - acesse este [link](https://luabinaries.sourceforge.net/)
 - scrolla pra baixo e seleciona versão que você quer instalar
@@ -57,7 +57,7 @@ Se você está em um sistema windows:
 - extraia o zip
 - coloque a pasta contendo os .exe na sua variável PATH (se não souber fazer isso, siga este [passo a passo](https://stackoverflow.com/questions/44272416/how-to-add-a-folder-to-path-environment-variable-in-windows-10-with-screensho) do stackoverflow)
 
-Se você está no MacOS, instale o brew se ele não estiver instalado e use:
+Se você está no **MacOS**, instale o brew se ele não estiver instalado e use:
 
 ``` shell
 brew update
@@ -538,3 +538,9 @@ otherCounter() -- output: 3
 
 Referência para esta parte de escopos
 - [http://lua-users.org/wiki/ScopeTutorial](http://lua-users.org/wiki/ScopeTutorial)
+
+## Conclusão
+
+PARABÉÉÉÉÉNNSSSS você concluiu a sessão de introdução a lua, tal qual um verdadeiro astronauta 🥳🥳🥳🥳🥳 muito obrigado por ter lido até aqui e boa sorte nas próximas sessões.
+
+Agora que você já ta manjando da sintaxe do lua a gente pode ir para os tópicos mais profundos que estão na pasta "lua/aprofundamento", no arquivo "aprofundamento.md. Mas se você quiser refrescar a memória (não só agora, em qualquer momento) também temos um _cheat sheet_ nesta pasta aqui; o arquivo se chama "introducao_cheat_sheet.lua". Esse arquivo é uma colinha que contém a sintaxe do lua comprimida em poucas linhas, só pra facilitar sua vida mesmo.
