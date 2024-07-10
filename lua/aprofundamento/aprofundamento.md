@@ -52,7 +52,7 @@ cat.purr() -- output: prrrrrr
 cat.meow() -- output: meow
 ```
 
-Esse método é o que é válido nas versões do lua a partir da 5.2, mas você provavelmente não está usando uma versão antiga então não vou prolongar essa parte (se você está, **por quê????**😭😭😭😭😭 atualize seu lua agora mesmo ou morra).
+Esse método é válido nas versões do lua a partir da 5.2, mas você provavelmente não está usando uma versão antiga então não vou prolongar essa parte (se você está, **por quê????**😭😭😭😭😭 atualize seu lua agora mesmo ou morra).
 
 ## Metamethods, metatables e OOP
 
