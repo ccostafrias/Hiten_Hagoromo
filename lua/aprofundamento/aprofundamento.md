@@ -4,7 +4,7 @@ A partir de agora a gente vai aprender a usar as funcionalidades e as biblioteca
 
 - modules
 - metamethods, metatables e OOP
-- multi-threading
+- coroutines
 - iterators
 - core library
 - IO library
@@ -125,5 +125,84 @@ Grilo:play() -- output: O Grilo starts playing a song
 
 Vamos analisar em detalhe o que esse código faz: Nas duas primeiras linhas a gente está criando uma classe `Band` e setando o `__index` dela para ela mesma, isso nos dá acesso aos seus métodos, como o método `play()`, que é definido logo em sequência. Depois a gente define uma nova classe, `RockBand`, que tem sua metatable setada para `Band`. Assim, quando chamamos um método em uma instância de `RockBand` e esse método não é encontrado na própria classe, ele é procurado na metatable (é o que acontece com o método `play()`). Nós também setamos o `__index` de `RockBand` para `RockBand` pelos mesmos motivos do que fizemos com `Band`. Depois definimos o constructor da classe `RockBand`, que cria uma table local ao mesmo tempo que seta a metatable dela para `RockBand`, com isso a tabela criada aí se torna uma "instância" de `RockBand`. A tabela tem sua propriedade `.name` atribuída e então é retornada da função. A partir daí, quando quisermos criar uma banda de rock é só chamar RockBand.new() passando o nome da banda. Então nas últimas linhas quando a gente faz `MP = RockBand.new("Major Parkinson")` o que acontece é que uma tabela é criada com a metatable `RockBand` que por sua vez tem a metatable `Band`, e quando a gente chama `play()` nessa tabela esse método é procurado nessa cadeia de metatables até ser encontrado. Pronto: criamos herança e OOP em lua. Se você leu o código com atenção provavelmente percebeu que ao definir e chamar o método `play()` a gente usa uma sintaxe esquisita, o dois pontos `:`. Isso acontece por que dentro de `play()` a gente quer ter acesso à table que está chamando ele, então com `:` a table é passada automaticamente como argumento, e pode ser acessada com a variável local `self` (vide a linha 5).
 
-## Multi-threading
+## Coroutines
 
+Para realizar múltiplas tarefas ""simultaneamente"" com lua a gente usa esse treco chamado "co-rotina". Eu digo simultaneamente entre aspas pois na verdade as co-rotinas vão rodar em uma mesma thread no seu processador, então não há paralelismo real.
+
+Para mexer com co-rotinas a gente vai usar principlamente essas 4 funções:
+
+- `coroutine.create()`: cria uma co-rotina
+- `coroutine.resume()`: passa o controle do processo pra uma co-rotina
+- `coroutine.yield()`: faz a co-rotina atual perder o controle do processo
+- `coroutine.status()`: retorna o status de uma co-rotina
+
+Então vamos criar um script meio abstrato que usa essas 4 funções para realizar duas tarefas simultaneamente passo-a-passo:
+
+``` Lua
+-- definindo duas arrays de dados super importantes
+tasksData = { {10, 20, 30}, {500, 1000, 1500, 2000, 2500}}
+
+-- uma função que cria funções que fazem algo com dados
+function createDataProcesser(action, dataSource)
+	return function()
+		for index, data in ipairs(dataSource) do
+			print(action .. " the data at position " .. index .. ": " .. data)
+			-- usando yield() depois de cada tarefa para essa co-rotina não
+			-- monopolizar o tempo de execução, afinal de contas a gente está
+			-- simulando paralelismo
+			coroutine.yield(index);
+		end
+	end
+end
+
+
+function processData()
+	-- criando duas co-rotinas que fazem coisas diferentes
+	local dataAnalyzer = coroutine.create(createDataProcesser("analyzing", tasksData[1]))
+	local dataDeleter = coroutine.create(createDataProcesser("deleting", tasksData[2]))
+	-- uma variável que indica se há tarefas restantes
+	local tasksRemaining = true
+
+	while tasksRemaining do
+		-- checando o status das co-rotinas
+		local analyzerStatus = coroutine.status(dataAnalyzer)
+		local deleterStatus = coroutine.status(dataDeleter)
+		-- se o status não for "dead" então a co-rotina ainda existe 
+		if analyzerStatus ~= "dead" then
+			-- inicia ou dá continuidade à co-rotina
+			coroutine.resume(dataAnalyzer)
+		end
+		if deleterStatus ~= "dead" then
+			coroutine.resume(dataDeleter)
+		end
+		-- se as duas co-rotinas estiverem acabadas, não há mais tarefas restantes
+		if analyzerStatus == "dead" and deleterStatus == "dead" then
+			tasksRemaining = false
+		end
+	end
+end
+
+processData()
+--[[
+output:
+analyzing the data at position 1: 10
+deleting the data at position 1: 500
+analyzing the data at position 2: 20
+deleting the data at position 2: 1000
+analyzing the data at position 3: 30
+deleting the data at position 3: 1500
+deleting the data at position 4: 2000
+deleting the data at position 5: 2500
+]]--
+```
+
+A maior parte da explicação já está nos comentários, mas eu quero que você note duas coisas; a primeira é a relação entre `yield()` e `resume()`. O `resume()` recebe uma co-rotina como argumento e inicia ela se ainda não tiver sido iniciada, ou dá continuidade à ela se esta já estava em andamento, já o `yield()` é usado dentro de uma co-rotina, e faz com que a execução dela seja pausada e o valor do argumento seja retornado para o lugar com o `resume()` que iniciou este ciclo. Depois, na próxima vez que o `continue()` seja chamado recebendo essa mesma co-rotina, ela irá continuar executando a partir da linha do último `yield()` que ela deu. Ou seja, essas duas funções ficam passando a bola uma para a outra, elas cedem o controle sobre o programa uma para a outra, e isso é chamado de _multi-threading colaborativo_. No nosso programa, apesar do `yield()` estar retornando o index, a gente não está fazendo nada com ele, mas poderíamos. A segunda coisa para notar é que estamos comparando o status de cada rotina com a string "dead", e isso é por que existem 4 status possíveis com seus respectivos significados:
+
+- *running*: a co-rotina é a que está atualmente rodando
+- *suspended*: a co-rotina não está rodando mas pode rodar se for passada para um `resume()`
+- *normal*: a co-rotina está ativa mas não é a que está atualmente rodando pois deu `resume()` para outra co-rotina
+- *dead*: a co-rotina já acabou sua execução
+
+E basicamente é só isso sobre coroutines
+
+## Iterators
