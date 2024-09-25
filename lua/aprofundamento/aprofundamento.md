@@ -6,7 +6,7 @@ A partir de agora a gente vai aprender a usar as funcionalidades e as biblioteca
 - metamethods, metatables e OOP
 - multi-threading
 - iterators
-- core library
+- core functions
 - IO library
 - OS library
 - module library
@@ -224,4 +224,106 @@ for num in n_evens() do
     print(num)
     if num >= 10 then break end
 end
+```
+
+## Core Functions
+
+Aqui a gente vai ver como usar algumas das funções que já vêm com o lua. Como há muitas, e algumas delas a gente já viu, eu vou filtrar aqui as que eu achar mais interessantes, explicar rapidamente elas e dar um exemplo pra cada. A ordem aqui é alfabética (por que é assim que está na [documentação](https://www.lua.org/manual/5.4/manual.html#5:~:text=6.1%20%E2%80%93%20Basic%20Functions)), então as primeiras funções não necessáriamente são mais legais ou úteis que as últimas. Enfim, vamos lá:
+
+### `assert()`
+
+Essa função simplesmente vê se seu primeiro argumento tem valor de verdade `true`. Se isso for verdade, nada acontece, mas se não for, ocorre um *erro* (e a mensagem de erro pode ser personalizada com um segundo argumento). Isso é útil porque podemos usar como ferramenta de teste ou debug, então costumamos passar como primeiro argumento uma comparação com forma `valor == valor_esperado`, e portanto o resultado do `assert()` nos dirá se o teste passou ou não
+
+``` Lua
+secret_code = 1357 -- o valor que queremos saber se está certo
+actual_code = 1357 -- o valor esperado
+
+assert(secret_code == actual_code, "Wrong secret-code")
+-- output: nada, pois os dois são iguais mesmo
+
+actual_code = 0000 -- mudando o código secreto real
+assert(secret_code == actual_code, "Wrong secret-code")
+--[[
+output: 
+lua: ./main.lua:8: Wrong secret-code
+stack traceback:
+        [C]: in function 'assert'
+        ./main.lua:8: in main chunk
+        [C]: in ?
+]]--
+```
+
+### `dofile()`
+
+Essa função roda um outro arquivo .lua e retorna os valores que aquele arquivo retornar. Então aqui no exemplo a gente tem um arquivo `main.lua` e outro arquivo `other.lua`, o `main.lua` chama `dofile()` passando como argumento o caminho para o outro arquivo, fazendo com que ele seja executado:
+
+``` Lua
+-- other.lua
+print("hello world!")
+return 1, 2, 3
+
+-- main.lua
+a, b, c = dofile('other.lua')
+print(a, b, c)
+
+--[[
+output:
+hello world
+1       2       3
+]]--
+```
+
+### `error()`
+
+Causa um erro:
+
+``` Lua
+error("heeeelp")
+
+--[[
+output: 
+lua: main.lua:1: heeeelp
+stack traceback:
+        [C]: in function 'error'
+        main.lua:1: in main chunk
+        [C]: in ?
+]]-- 
+```
+
+### `pcall()`
+
+O `pcall()` recebe uma função e seus argumentos, e então chama essa função com os argumentos passados em um _modo protegido_. Isto é, os erros que ocorrerem na função passada como argumento não se propagarão, ao invés disso o `pcall()` retornará 2 valores, sendo o primeiro um bool que é `false` se tiver dado algum erro, e os restantes sendo ou a mensagem de erro ou os valores de retorno da função. No exemplo podemos ver os dois casos:
+
+``` Lua
+-- função que pode causar erro
+function goesWrong(a, b)
+	assert(a == b, "something went wrong")
+end
+-- função que retorna normalmente
+function returnsNormally(a, b)
+	return a+b, a*b
+end
+
+code, msg = pcall(goesWrong, 2, 3)
+print(err, msg) -- output: false   main.lua:3: something went wrong
+code, ret1, ret2 = pcall(returnsNormally, 2, 3)
+print(code, ret1, ret2) -- output: true    5       6
+```
+
+
+### `type()`
+
+Recebe uma variável como argumento e retorna o tipo dessa variável, bem intuitiva:
+
+``` Lua
+t = {'dsad', 'kmofm', 'ghrwd'}
+n = 10
+s = "yay"
+b = false
+f = function() end
+print(type(t)) -- output: table
+print(type(n)) -- output: number
+print(type(s)) -- output: string
+print(type(b)) -- output: boolean
+print(type(f)) -- output: function
 ```
