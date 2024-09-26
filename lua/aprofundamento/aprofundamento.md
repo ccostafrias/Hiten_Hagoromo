@@ -412,3 +412,42 @@ with no consequence
 I will do it again
 ]]--
 ```
+
+## Biblioteca de OS
+
+A table `os` nos fornece alguns métodos que interagem com o sistema operacional de uma forma mais direta. Por exemplo, uma das funções dessa tabela é a `os.execute()`, que executa um comando como se você tivesse digitado ele no terminal, tal qual a função `system()` do C:
+
+``` Lua
+os.execute("whoami") -- output: {o nome do seu usuário}
+```
+
+Outra função muito útil é a `clock()`, que retorna o tempo em segundos que se passou desde o início da execução do programa, então você pode usar ela para fazer benchmark da eficiência de uma função, por exemplo.
+
+``` Lua
+function slowww()
+	for i = 0, 100000 do
+		print(i)
+	end
+end
+
+start = os.clock()
+slowww()
+finish = os.clock()
+
+print("slowww() took " .. finish-start .. " seconds to execute")
+-- output: slowww() took 0.120197 seconds to execute
+```
+
+Também temos algumas outras funções simplezinhas, como a `os.rename()`, que renomeia um arquivo ou diretório, a `os.remove()`, que remove um arquivo ou um diretório vazio, a `os.setlocale()`, que faz a mesma coisa que sua xará do C, e a `os.date()` que retorna a data atual:
+
+``` Lua
+print(os.date())
+-- output: Thu Sep 26 11:12:04 2024
+```
+
+E por último, mas não menos importante, temos também a `os.getenv()`, que recebe o nome de uma variável de ambiente e retorna seu valor, se ela existir, e `nil` se ela não existir:
+
+``` Lua
+print(os.getenv("SHELL")) -- output: /bin/bash
+print(os.getenv("INEXISTENT_ENVIRONMENT_VARIABLE")) -- output: nil
+```
