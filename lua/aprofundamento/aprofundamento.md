@@ -327,3 +327,88 @@ print(type(s)) -- output: string
 print(type(b)) -- output: boolean
 print(type(f)) -- output: function
 ```
+
+## Biblioteca de IO
+
+Em lua a gente tem uma tabela `io` que contém todos os métodos que precisarmos para mexer com input/output. O primeiro método é o `io.open()`, que equivaleria ao `fopen()` do C, ele recebe o caminho para um arquivo e o modo de abertura e retorna um "descritor de arquivo" - um objeto que representa um arquivo, como o `FILE *` do C. Os modos de abrir que existem são iguais aos do C: r, w, a, r+, w+ e a+. Por exemplo seria assim que nós criariamos uma variável contendo um arquivo de texto pronto para leitura:
+
+``` Lua
+file = io.open("something.txt", "r")
+```
+
+Depois de abrir um arquivo, quando nós terminarmos de usá-lo, temos que fechar ele com a função `io.close()`, dessa forma:
+
+``` Lua
+io.close(file)
+```
+
+E é entre essas duas chamadas de função que a gente lê ou escreve no arquivo. Sendo assim, as duas principais funções que iremos utilizar serão o `read()` e
+o `write()`, que funcionam de forma relativamente simples. A read lê do arquivo de acordo com a formatação passada como parâmetro (semelhante ao `fscanf()` do C). As formatações que existem são:
+
+- `"n"` para ler um número
+- `"a"` para ler o arquivo até o final
+- `"l"` para ler uma linha descartando o '\n'
+- `"L"` para ler uma linha incluindo o '\n'
+- `{número}` para ler {número} bytes
+
+Se você não passar nenhum argumento para a função ela usará o `"l"` por padrão. Já o `write()` simplemente escreve os argumentos que ele recebe (podendo ser eles números ou strings) para o arquivo. Aqui vai um exemplo da gente escrevendo para um arquivo e depois lendo o que a gente escreveu nele:
+
+``` Lua
+-- escrevendo em um arquivo
+file = io.open("something.txt", "w")
+file:write("Hello, file!\n", "vcnvqnd")
+file:close()
+
+-- lendo o que a gente escreveu
+file = io.open("something.txt", "r")
+line1 = file:read("L")
+line2 = file:read()
+print(line1 .. line2)
+file:close()
+
+--[[
+output:
+Hello, file!
+vcnvqnd
+]]--
+```
+
+Aqui você pode ver que a gente está chamando os métodos através das variáveis contendo o arquivo, dessa forma: `arquivo:funcao(argumentos)`, mas há outro jeito também. Os arquivos de entrada e saída padrão do `io` é o terminal, mas podemos mudar eles para serem o arquivo que quisermos. Ou seja, se chamarmos `io.read()` e `io.write()` sem fazer nada antes, nós estaríamos lendo inputs e escrevendo texto pro terminal, como se estivessemos usando as funções `scanf()` e `printf()` do C, mas com os métodos `io.input()` e `io.output()` nós podemos redefinir os arquivos padrão de input e output do módulo `io`. Segue um exemplo:
+
+``` Lua
+--[[
+conteúdo do input.txt:
+
+beat me up
+beat me down
+]]--
+
+-- main.lua:
+a = io.read() -- lendo input do terminal
+io.write(a) -- escrevendo de volta pro terminal
+-- mudando a entrada e a saída padrão
+io.input("input.txt")
+io.output("output.txt")
+-- lendo da nova entrada padrão: input.txt
+line1 = io.read("L")
+line2 = io.read("L")
+-- escrevendo pra nova saída padrão: output.txt
+io.write(line2 .. '\n' .. line1)
+
+-- conteúdo do output.txt:
+beat me down
+beat me up
+```
+
+Outro método útil da tabela `io` é o `lines()`, que recebe o caminho para um arquivo e retorna um iterador que itera sobre as linhas desse arquivo:
+
+``` Lua
+--[[
+conteúdo do something.txt:
+
+for what it's worth
+I'd do it again
+with no consequence
+I will do it again
+]]--
+```
