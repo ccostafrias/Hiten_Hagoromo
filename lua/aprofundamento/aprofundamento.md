@@ -411,6 +411,13 @@ I'd do it again
 with no consequence
 I will do it again
 ]]--
+
+-- vamos contar quantos caracteres tem em something.txt
+count = 0
+for line in io.lines("something.txt") do
+    count = count + #line
+end
+print(count) -- output: 71
 ```
 
 ## Biblioteca de OS
