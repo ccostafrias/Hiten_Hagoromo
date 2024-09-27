@@ -9,7 +9,6 @@ A partir de agora a gente vai aprender a usar as funcionalidades e as biblioteca
 - core functions
 - IO library
 - OS library
-- module library
 - debug library
 - otimizações
 
@@ -458,3 +457,154 @@ E por último, mas não menos importante, temos também a `os.getenv()`, que rec
 print(os.getenv("SHELL")) -- output: /bin/bash
 print(os.getenv("INEXISTENT_ENVIRONMENT_VARIABLE")) -- output: nil
 ```
+
+## Biblioteca de Debug
+
+A tabela debug é Pog porque ela deixa você analizar o comportamento do seu código bem de perto sem ter que ficar printando tudo como um lunático. A função mais importante dessa tabela é a `debug.debug()`, que pausa a execução do seu programa e inicia uma sessão de debug, na qual você pode executar comandos em lua para investigar o estado ou o comportamento atual do seu programa. Por exemplo, digamos que a gente tem o seguinte código:
+
+``` Lua
+num = 1000
+-- função que teoricamente randomiza um número para um outro valor menor ou igual a ele mesmo
+randomize = function(num)
+	num = math.floor(num * math.random());
+end
+-- randomizando nosso número 10 vezes e checando uma condição
+for i = 1, 10 do
+	randomize(num)
+	if num < 500 then
+		print("smaller than 500")
+	else
+		print("greater than or equal to 500")
+	end
+	-- reiniciando o valor dele
+	num = 1000
+end
+```
+
+Quando nós executamos ele, algo que não esperávamos (ou pelo menos finja que não esperava) acontece: o output é sempre esse o mesmo:
+
+``` Shell
+$ lua main.lua
+greater than or equal to 500
+greater than or equal to 500
+greater than or equal to 500
+greater than or equal to 500
+greater than or equal to 500
+greater than or equal to 500
+greater than or equal to 500
+greater than or equal to 500
+greater than or equal to 500
+greater than or equal to 500
+$
+```
+
+Para sabermos o que está acontecendo, vamos usar a função `debug.debug()` dentro do nosso for loop, que ficará assim:
+
+``` Lua
+for i = 1, 10 do
+	debug.debug()
+	randomize(num)
+	if num < 500 then
+		print("smaller than 500")
+	else
+		print("greater than or equal to 500")
+	end
+	num = 1000
+end
+```
+
+Então na primeira vez que a gente chegar na linha do debugger, esperamos que o valor de `num` seja 1000, e nas vezes subsequentes esperamos que este valor mude. Então vamos executar o código e usar o debugger para conferir isso (perceba que toda vez que quisermos dar continuidade à execução do código usamos o comando `cont`):
+
+``` Shell
+$ lua main.lua 
+lua_debug> print(num)
+1000
+lua_debug> cont
+greater than or equal to 500
+lua_debug> print(num)
+1000
+lua_debug> cont
+greater than or equal to 500
+lua_debug> print(num)
+1000
+lua_debug>
+...
+$ 
+```
+
+Ok, a gente na primeira vez que printamos, o valor de `num` realmente era 1000, mas nas vezes subsequentes ele não mudou, e com isso a gente tem um momento de iluminação espiritual e percebemos que a função `randomize()` só está alterando o valor de seu argumento localmente, e que números em lua não são passados como referência para funções. E então a gente corrige o bug usando tables, que são de fato passadas por referência:
+
+``` Lua
+num = {1000} -- usando uma table para poder passar por referência
+randomize = function(num)
+    num[1] = math.floor(num[1] * math.random());
+end
+for i = 1, 10 do
+    randomize(num)
+    if num[1] < 500 then
+        print("smaller than 500")
+    else
+        print("greater than or equal to 500")
+    end
+    num[1] = 1000
+end
+```
+
+E agora nosso output faz sentido:
+
+``` Shell
+$ lua main.lua 
+smaller than 500
+smaller than 500
+smaller than 500
+smaller than 500
+greater than or equal to 500
+smaller than 500
+greater than or equal to 500
+greater than or equal to 500
+smaller than 500
+greater than or equal to 500
+$
+```
+
+Além da função `debug.debug()`, uma outra interessante é a `debug.sethook()`, que recebe como argumentos uma função e uma string com um desses 3 valores: "c", "r", "l". A partir do ponto em que `sethook()` é chamada, a função que ela recebeu será chamada:
+
+- toda vez que uma outra função for chamada, se o segundo argumento for "c"
+- toda vez que uma função retornar, se o segundo argumento for "r"
+- antes de cada linha ser executada, se o segundo argumento for "l"
+
+Por exemplo:
+
+``` Lua
+status = "online"
+
+function changeStatus()
+    if status == "online" then
+        status = "offline"
+    else
+        status = "online"
+    end
+end
+
+function showStatus()
+    print("changing status from: " .. status)
+end
+
+changeStatus() -- status vira offline
+changeStatus() -- status vira online
+changeStatus() -- status vira offline
+-- AAAAA finge que a gente se perdeu no meio de tanta mudança e queremos saber o status toda vez que ele mudar
+debug.sethook(showStatus, "c") -- aplicando nosso hook que confere o status
+changeStatus()
+changeStatus()
+changeStatus()
+
+--[[
+output:
+changing status from: offline
+changing status from: online
+changing status from: offline
+]]--
+```
+
+Também existem outras funções mais nichadas nesse módulo, como a `gethook()`, a `getinfo()` e a `traceback()`, mas eu não quero prolongar d+ essa sessão, então fica como sua lição de casa ler sobre e testar elas se quiser.
