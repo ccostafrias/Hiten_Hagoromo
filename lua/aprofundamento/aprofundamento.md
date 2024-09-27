@@ -14,6 +14,8 @@ A partir de agora a gente vai aprender a usar as funcionalidades e as biblioteca
 
 Tem algumas bibliotecas e funções que não serão abordadas simplesmente por serem algo que você descobre facilmente em 2 segundos no google e que apenas poluiriam este curso. Por exemplo, não iremos falar sobre funções como a `math.sqrt()`, por que caso algum dia você precise dela, você irá simplesmente pesquisar "square root function lua" no google e o primeiro resultado te entregará de bandeija a resposta que você queria. O que faremos aqui é explicar algumas funções um pouco menos óbvias e que são boas de se ter em mente desde já.
 
+A referência que estaremos usando ao longo desse arquivo será o [manual de referência oficial do lua 5.4](https://www.lua.org/manual/5.4/manual.html), então se você quiser pode ir acompanhando ele junto do curso pra tirar dúvidas ou sla.
+
 ## Módulos
 
 Quando seus projetos ficarem muito grandes você provavelmente vai querer separar ele em diferentes arquivos e depois conectar estes arquivos de alguma forma. Em C você deve ter visto que a gente faz isso com arquivos de header, com extensão `.h`. Já no lua, assim como em linguagens como python e JS, não são necessários arquivos header, você simplesmente terá múltiplos arquivos `.lua`. Os arquivos que definirem funções ou variáveis que você queira usar em outro arquivo podem então **exportá-las**. Para isso, basta que o módulo **retorne** o valor que você quer exportar. Assim, outro módulo poderá incluir/importar aquilo que foi retornado.
@@ -608,3 +610,30 @@ changing status from: offline
 ```
 
 Também existem outras funções mais nichadas nesse módulo, como a `gethook()`, a `getinfo()` e a `traceback()`, mas eu não quero prolongar d+ essa sessão, então fica como sua lição de casa ler sobre e testar elas se quiser.
+
+## Otimizações
+
+Ebaaa, a sessão final chegou. Aqui a gente vai dar uma olhada nas dicas de otimização da [wiki dos lua-users](http://lua-users.org/wiki/OptimisationTips). Você não precisa aplicar elas a todo momento, mas já que nosso plano é desenvolver jogos e aplicações gráficas (coisas que no geral dependem muito de um código de alto desempenho) vale a pena ter esses truques no arsenal:
+
+- Dê bastante preferência a usar variáveis *locais* ao invés de globais, pois no lua elas são acessadas de forma mais rápida
+- `t[#t + 1] = x` é mais rápido do que `table.insert(t, x)`
+- Multiplicação é mais rápido do que divisão, ex: `x * 0.5` é preferível à `x/2` 
+- `x * x` é mais rápido que `x^2`
+- O operador `//` de divisão de inteiros é mais rápido do que o `/` (divisão com floats), mas cuidado, ele descarta as casas decimais
+- For loops são um pouco mais rápidos que while loops
+- Acesso de valores em tabelas é meio lento, então se há elementos que você acessa repetidamente, pode ser uma boa ideia fazer um "cache" deles em uma variável local
+- se você quiser concatenar uma lista de strings, use `table.concat()` ao invés de fazer manualmente com um for loop
+- Se você tem uma ideia geral de qual será o tamanho de uma tabela, você pode pré-alocar ela com esse tamanho desde o inicio com a função `table.create()`, por exemplo:
+
+``` Lua
+t = {} -- ruim se sua tabela for crescer muitas vezes
+t = table.create(100) -- melhor
+```
+
+Enfim, por enquanto é isso.
+
+## Conclusão
+
+*PARABÉNS DE NOVO CARALHOOOOOO*, você sobreviveu ao breve curso de Lua. Lembre-se de que toda linguagem de programação tem sua imensa complexidade e de que o que aprendemos aqui é só o começo. Mas assim, as coisas profundas de verdade a gente aprende pondo a mão na massa, então o que eu sugiro fortemente que você faça é usar tudo que a gente aprendeu até agora pra fazer algum projetinho divertido, sua imaginação é o limite. Em linguagens como o C, que nós temos usado de comparativo, pode ser meio assustador começar um novo projeto, mas Lua é tão fofinha e redondinha que eu acredito que você não terá grandes problemas para implementar algo legal.
+
+Mas então, o que vêm agora? Bom, sabendo lua a gente pode começar a aprender *LÖVE*, a framework foda e open source para fazer joguinhos, espero você lá.
