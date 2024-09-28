@@ -13,11 +13,11 @@ A minha ideia para esta jornada é a seguinte
 
 1. Começaremos com uma visão geral de lua, sentindo um gostinho inicial desta linguagem, vendo quais são seus diferenciais e como ela se compara a outras (principalmente C).
 
-2. Depois iremos explorar um pouco mais a fundo algumas bibliotecas de lua, e talvez escrever alguns algoritmozinhos e soluções para desafios para que fiquemos mais confortáveis com a linguagem.
+2. Depois iremos explorar um pouco mais a fundo algumas funcionalidades e bibliotecas do lua.
 
-3. Para finalizar a sessão de lua com chave de ouro e passar para a sessão de desenvolvimento de jogos com LÖVE, vamos fazer um projeto final bem massa que use o que a gente aprendeu de lua até agora.
+3. Para finalizar a sessão de lua com chave de ouro e passar para a sessão de desenvolvimento de jogos com LÖVE, vamos ter uma sessão *opcional* na qual implementamos juntos um projeto final bem massa que use o que a gente aprendeu de lua até agora.
 
-4. A partir daí iremos estudar o framework LÖVE do melhor jeito, com a mão na massa. A gente vai DO ZERO fazer um jogo pog (que não seja jogo da cobrinha ou Pong, esses são mto broxa) que nos mostre as capacidades do LÖVE e nos permita futuramente fazer jogos cada vez melhores. Algumas das funcionalidades que a gente espera programar são: jogador com animação, movimento e ataque; NPCs com diálogo simples; mundo interessante e bonitinho; inimigos variados; e o melhor de tudo: sistema de plantação!!! (sim, o jogo será basicamente uma cópia simplificada de Forager)
+4. A partir daí iremos estudar o framework LÖVE do melhor jeito, com a mão na massa. A gente vai DO ZERO fazer um jogo irado (que não seja jogo da cobrinha ou Pong, esses são mto broxa) que nos mostre as capacidades do LÖVE e nos permita futuramente fazer jogos cada vez melhores. Algumas das funcionalidades que a gente espera programar são: jogador com animação, movimento e ataque; NPCs com diálogo simples; mundo interessante e bonitinho; inimigos variados; e o melhor de tudo: um sistema de agricultura!!! (sim, o jogo será basicamente uma cópia simplificada de Forager)
 
 Então o Hiten Hagoromo - nossa sonda lunar ~entendeu? por que a linguagem se chama lua.~ - vai acontecer em duas etapas: aprender lua e aprender LÖVE. Espero te ver no final
 
