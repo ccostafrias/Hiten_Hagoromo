@@ -428,7 +428,7 @@ for i = 10, 0, -2 do
 end
 ```
 
-Por último, a gente também pode usar o for loop para iterar pelas entradas de uma tabela com as funções `ipairs()` ou `pairs()`, que geram um iterador a partir da tabela que elas recebem como argumento (a diferença entre as duas é que `ipairs()` só funciona quando as chaves da tabela são números), saca só:
+Por último, a gente também pode usar o for loop para iterar pelas entradas de uma tabela com as funções `ipairs()` ou `pairs()`, que geram um iterador a partir da tabela que elas recebem como argumento (`ipairs()` só funciona quando as chaves da tabela são números), saca só:
 
 ``` Lua
 someTable = {name = "Orimoto", age = 65, course = "SI"}
