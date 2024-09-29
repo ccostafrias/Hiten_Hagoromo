@@ -712,4 +712,10 @@ Enfim, por enquanto é isso.
 
 *PARABÉNS DE NOVO CARALHOOOOOO*, você sobreviveu ao breve curso de Lua. Lembre-se de que toda linguagem de programação tem sua imensa complexidade e de que o que aprendemos aqui é só o começo. Mas assim, as coisas profundas de verdade a gente aprende pondo a mão na massa, então o que eu sugiro fortemente que você faça é usar tudo que a gente aprendeu até agora pra fazer algum projetinho divertido, sua imaginação é o limite. Em linguagens como o C, que nós temos usado de comparativo, pode ser meio assustador começar um novo projeto, mas Lua é tão fofinha e redondinha que eu acredito que você não terá grandes problemas para implementar algo legal.
 
+<<<<<<< HEAD
+Se você estiver sem criatividade ou quiser ver um exemplo real de projetinho em lua, nós temos um na pasta "projeto_final". Nela há dois arquivos, um `.md` com uma explicação/documentação de todo o processo de criação desse projeto, e um `.lua` com o código do projeto em si. Ler esses arquivos não é necessário de forma alguma para continuar o Hiten Hagaromo nem nada, mas talvez você aprenda algo novo neles.
+
 Mas então, o que vêm agora? Bom, sabendo lua a gente pode começar a aprender *LÖVE*, a framework foda e open source para fazer joguinhos, espero você lá.
+=======
+Mas então, o que vêm agora? Bom, sabendo lua a gente pode começar a aprender *LÖVE*, a framework foda e open source para fazer joguinhos, espero você lá.
+>>>>>>> f64183574498535fda24a17515d201c5cc506865
