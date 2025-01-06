@@ -31,7 +31,7 @@ function print_map(map)
 	for i = 1, map.height do
 		for j = 1, map.width do
 			if map.tiles[i][j] == 1 then
-				io.write("ww")
+				io.write(land..land)
 			else
 				io.write("  ")
 			end
