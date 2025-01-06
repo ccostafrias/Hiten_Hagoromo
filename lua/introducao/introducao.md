@@ -123,7 +123,7 @@ print(nome .. status) -- output: Oda Gênio
 print(string.sub(nome, 1, 2)) -- output: Od
 ```
 
-A sintaxe `..` junta duas strings, e a função string.sub() recebe 3 argumentos, uma string e dois números, e então retorna uma substring do primeiro argumento de acordo que vai do segundo argumento até o terceiro, então nesse caso uma substring de "Oda" que vai da primeira letra até a segunda (pq passamos 1 e 2 como argumentos), o que resulta em "Od".
+A sintaxe `..` junta duas strings e a função string.sub() recebe 3 argumentos, uma string e dois números, e então retorna uma substring do primeiro argumento que vai do segundo argumento até o terceiro. Então, nesse caso, temos uma substring de "Oda" que vai da primeira letra até a segunda (pq passamos 1 e 2 como argumentos), o que resulta em "Od".
 
 ### Nil
 
@@ -131,7 +131,7 @@ O `nil` seria mais ou menos equivalente ao `NULL` do C, ele representa algo que 
 
 ### Function
 
-Ué, funções são... um tipo de dado? SIM! em lua (mas não apenas em lua) funções são _first class citizens_ (cidadões de primeira classe), isso basicamente significa que elas podem ser atribuidas à uma variável, podem ser passadas como parâmetros para outras funções e podem ser retornadas de funções. Muito pog. Em lua nós declaramos uma função assim:
+Ué, funções são... um tipo de dado? SIM! em lua (mas não apenas em lua) funções são _first class citizens_ (cidadões de primeira classe), isso basicamente significa que elas podem ser atribuidas à uma variável, podem ser passadas como parâmetros para outras funções e podem ser retornadas de funções. Poggers.        Em lua nós declaramos uma função assim:
 
 ``` Lua
 function sum(a, b)
@@ -394,7 +394,7 @@ repeat
 until a > 1024
 ```
 
-Esse bloco entre o `repeat` e o `until` vai rodar pelo menos uma vez e continuará rodando até que a condição que vem depois do `until` se torne **verdadeira**. Mas por que isso é o contrário do `do while` no C? é porque o `do while` roda até que a condição que vêm depois do `while` se torne **falsa**.
+Esse bloco entre o `repeat` e o `until` vai rodar pelo menos uma vez e continuará rodando até que a condição que vem depois do `until` se torne **verdadeira**. Mas por que isso é o contrário do `do while` no C? é porque o `do while` roda até que a condição que vem depois do `while` se torne **falsa**.
 
 Por último temos o `for` loop, que em lua é consideravelmente diferente daquele em C. A sintaxe é mais ou menos assim:
 
