@@ -1,9 +1,10 @@
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -- algumas variáveis globais        ~~
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-local water = "♒︎"
-local land = "⣿"
+local water = "〜"
+local land = "⣿⣿"
 local grass = "w"
+local tree = "⽊"
 local mountain = "ᨒ"
 local house = "⌂"
 local temple = "⾕"
@@ -15,7 +16,7 @@ local iterations
 --~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -- preenche um mapa com barulho aleatório
-function generate_noise(map, noise_density)
+local function generate_noise(map, noise_density)
 	for i = 1, map.height do
 		for j = 1, map.width do
 			if math.random() <= noise_density then
@@ -27,13 +28,13 @@ function generate_noise(map, noise_density)
 	end
 end
 
-function print_map(map)
+local function print_map(map)
 	for i = 1, map.height do
 		for j = 1, map.width do
 			if map.tiles[i][j] == 1 then
-				io.write(land..land)
+				io.write(land)
 			else
-				io.write("  ")
+				io.write(water)
 			end
 		end
 		io.write("\n")
@@ -41,7 +42,7 @@ function print_map(map)
 end
 
 -- copies the tiles table from the map to dest
-function copy_map(dest, map)
+local function copy_map(dest, map)
 	for i = 1, map.height do
 		dest[i] = {}
 		for j = 1, map.width do
@@ -51,7 +52,7 @@ function copy_map(dest, map)
 end
 
 -- counts how many of the neighbors of a given cell are active
-function count_neighbors(tiles, height, width, i, j)
+local function count_neighbors(tiles, height, width, i, j)
 	local neighbors = 0
 	if i > 1 then
 		if j > 1 then
@@ -80,7 +81,7 @@ function count_neighbors(tiles, height, width, i, j)
 	return neighbors
 end
 
-function step_automata(map)
+local function step_automata(map)
 	local tiles_copy = {}
 	copy_map(tiles_copy, map)
 	for i = 1, map.height do
@@ -102,14 +103,13 @@ end
 -- perguntando pro usuário o tamanho do mapa que ele quer:
 repeat
 	io.write("qual vai ser a largura do seu mapa? (digite um número)\n> ")
-	map.width = io.read()
-until tonumber(map.width)
-map.width = tonumber(map.width)
+	map.width = tonumber(io.read())
+until map.width and map.width > 0
+
 repeat
 	io.write("e a altura? (digite outro número)\n> ")
-	map.height = io.read()
-until tonumber(map.height)
-map.height = tonumber(map.height)
+	map.height = tonumber(io.read())
+until map.height and map.height > 0
 
 -- inicializando o mapa
 for i = 1, map.height do
