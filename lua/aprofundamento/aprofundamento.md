@@ -414,13 +414,13 @@ print(type(f)) -- output: function
 
 ## Biblioteca de IO
 
-Em lua a gente tem uma tabela `io` que contém todos os métodos que precisarmos para mexer com input/output. O primeiro método é o `io.open()`, que equivaleria ao `fopen()` do C, ele recebe o caminho para um arquivo e o modo de abertura e retorna um "descritor de arquivo" - um objeto que representa um arquivo, como o `FILE *` do C. Os modos de abrir que existem são iguais aos do C: r, w, a, r+, w+ e a+. Por exemplo seria assim que nós criariamos uma variável contendo um arquivo de texto pronto para leitura:
+Em lua a gente tem uma tabela `io` que contém todos os métodos que precisarmos para mexer com input/output. O primeiro método é o `io.open()`, que equivaleria ao `fopen()` do C. Ele recebe o caminho para um arquivo e o modo de abertura e retorna um "descritor de arquivo" - um objeto que representa um arquivo, como o `FILE *` do C. Os modos de abrir que existem são iguais aos do C: r, w, a, r+, w+ e a+. Por exemplo, seria assim que nós criariamos uma variável contendo um arquivo de texto pronto para leitura:
 
 ``` Lua
 file = io.open("something.txt", "r")
 ```
 
-Depois de abrir um arquivo, quando nós terminarmos de usá-lo, temos que fechar ele com a função `io.close()`, dessa forma:
+Depois de abrir um arquivo, quando nós terminarmos de usá-lo, temos que fechar ele com a função `io.close()`:
 
 ``` Lua
 io.close(file)
@@ -435,7 +435,7 @@ o `write()`, que funcionam de forma relativamente simples. A read lê do arquivo
 - `"L"` para ler uma linha incluindo o '\n'
 - `{número}` para ler {número} bytes
 
-Se você não passar nenhum argumento para a função ela usará o `"l"` por padrão. Já o `write()` simplemente escreve os argumentos que ele recebe (podendo ser eles números ou strings) para o arquivo. Aqui vai um exemplo da gente escrevendo para um arquivo e depois lendo o que a gente escreveu nele:
+Se você não passar nenhum argumento para a função ela usará o `"l"` por padrão. Já o `write()` simplemente escreve os argumentos que ele recebe (podendo ser eles números ou strings) para o arquivo. Aqui vai um exemplo de um código que escreve para um arquivo e depois lê o que foi escrito nele:
 
 ``` Lua
 -- escrevendo em um arquivo
@@ -457,15 +457,12 @@ vcnvqnd
 ]]--
 ```
 
-Aqui você pode ver que a gente está chamando os métodos através das variáveis contendo o arquivo, dessa forma: `arquivo:funcao(argumentos)`, mas há outro jeito também. Os arquivos de entrada e saída padrão do `io` é o terminal, mas podemos mudar eles para serem o arquivo que quisermos. Ou seja, se chamarmos `io.read()` e `io.write()` sem fazer nada antes, nós estaríamos lendo inputs e escrevendo texto pro terminal, como se estivessemos usando as funções `scanf()` e `printf()` do C, mas com os métodos `io.input()` e `io.output()` nós podemos redefinir os arquivos padrão de input e output do módulo `io`. Segue um exemplo:
+Aqui você pode ver que a gente está chamando os métodos através das variáveis contendo o arquivo dessa forma: `arquivo:funcao(argumentos)`, mas há outro jeito também. Os arquivos de entrada e saída padrão do `io` são o terminal, mas podemos mudar eles para serem os arquivos que quisermos. Ou seja, se chamarmos `io.read()` e `io.write()` sem fazer nada antes, nós estaríamos lendo inputs e escrevendo texto pro terminal como se estivessemos usando as funções `scanf()` e `printf()` do C. Mas, com os métodos `io.input()` e `io.output()`, nós podemos redefinir os arquivos padrão de input e output do módulo `io`. Segue um exemplo:
 
 ``` Lua
---[[
-conteúdo do input.txt:
-
+--conteúdo do input.txt:
 beat me up
 beat me down
-]]--
 
 -- main.lua:
 a = io.read() -- lendo input do terminal
@@ -551,6 +548,7 @@ A tabela debug é Pog porque ela deixa você analizar o comportamento do seu có
 num = 1000
 -- função que teoricamente randomiza um número para um outro valor menor ou igual a ele mesmo
 randomize = function(num)
+	-- math.random retorna um valor entre 0 e 1
 	num = math.floor(num * math.random());
 end
 -- randomizando nosso número 10 vezes e checando uma condição
@@ -561,8 +559,6 @@ for i = 1, 10 do
 	else
 		print("greater than or equal to 500")
 	end
-	-- reiniciando o valor dele
-	num = 1000
 end
 ```
 
@@ -594,7 +590,6 @@ for i = 1, 10 do
 	else
 		print("greater than or equal to 500")
 	end
-	num = 1000
 end
 ```
 
@@ -617,10 +612,10 @@ lua_debug>
 $ 
 ```
 
-Ok, a gente na primeira vez que printamos, o valor de `num` realmente era 1000, mas nas vezes subsequentes ele não mudou, e com isso a gente tem um momento de iluminação espiritual e percebemos que a função `randomize()` só está alterando o valor de seu argumento localmente, e que números em lua não são passados como referência para funções. E então a gente corrige o bug usando tables, que são de fato passadas por referência:
+Ok, na primeira vez que printamos `num`, o valor dele realmente era 1000. Mas nas vezes subsequentes ele não mudou, e com isso a gente tem um momento de iluminação espiritual e percebemos que a função `randomize()` só está alterando o valor de seu argumento localmente, e que números em lua não são passados como referência para funções. E então nós corrigimos o bug usando tables, que são de fato passadas por referência:
 
 ``` Lua
-num = {1000} -- usando uma table para poder passar por referência
+num = {1000} -- usando uma table para poder passar num por referência
 randomize = function(num)
     num[1] = math.floor(num[1] * math.random());
 end
@@ -631,7 +626,6 @@ for i = 1, 10 do
     else
         print("greater than or equal to 500")
     end
-    num[1] = 1000
 end
 ```
 
@@ -639,16 +633,16 @@ E agora nosso output faz sentido:
 
 ``` Shell
 $ lua main.lua 
-smaller than 500
-smaller than 500
-smaller than 500
-smaller than 500
-greater than or equal to 500
-smaller than 500
 greater than or equal to 500
 greater than or equal to 500
 smaller than 500
-greater than or equal to 500
+smaller than 500
+smaller than 500
+smaller than 500
+smaller than 500
+smaller than 500
+smaller than 500
+smaller than 500
 $
 ```
 
@@ -717,8 +711,8 @@ Enfim, por enquanto é isso.
 
 ## Conclusão
 
-*PARABÉNS DE NOVO CARALHOOOOOO*, você sobreviveu ao breve curso de Lua. Lembre-se de que toda linguagem de programação tem sua imensa complexidade e de que o que aprendemos aqui é só o começo. Mas assim, as coisas profundas de verdade a gente aprende pondo a mão na massa, então o que eu sugiro fortemente que você faça é usar tudo que a gente aprendeu até agora pra fazer algum projetinho divertido, sua imaginação é o limite. Em linguagens como o C, que nós temos usado de comparativo, pode ser meio assustador começar um novo projeto, mas Lua é tão fofinha e redondinha que eu acredito que você não terá grandes problemas para implementar algo legal.
+*PARABÉNS DE NOVO CARALHOOOOOO*, você sobreviveu ao breve curso de Lua. Lembre-se de que toda linguagem de programação tem sua imensa complexidade e de que o que aprendemos aqui é só o começo. Mas, assim, as coisas profundas de verdade a gente aprende pondo a mão na massa, então o que eu sugiro fortemente que você faça é usar tudo que a gente aprendeu até agora pra fazer algum projetinho divertido - sua imaginação é o limite. Em linguagens como o C, que nós temos usado de comparativo, pode ser meio assustador começar um novo projeto, mas Lua é tão fofinha e redondinha que eu acredito que você não terá grandes problemas para implementar algo legal.
 
-Se você estiver sem criatividade ou quiser ver um exemplo real de projetinho em lua, nós temos um na pasta "projeto_final". Nela há dois arquivos, um `.md` com uma explicação/documentação de todo o processo de criação desse projeto, e um `.lua` com o código do projeto em si. Ler esses arquivos não é necessário de forma alguma para continuar o Hiten Hagoromo nem nada, mas talvez você aprenda algo novo neles.
+Se você estiver sem criatividade ou quiser ver um exemplo real de projetinho em lua, nós temos um na pasta "projeto_final". Nela há dois arquivos: um `.md` com uma explicação/documentação de todo o processo de criação desse projeto e um `.lua` com o código do projeto em si. Ler esses arquivos não é necessário de forma alguma para continuar o Hiten Hagoromo nem nada, mas talvez você aprenda algo novo neles.
 
-Mas então, o que vêm agora? Bom, sabendo lua a gente pode começar a aprender *LÖVE*, a framework foda e open source para fazer joguinhos, espero você lá.
+Mas então, o que vem agora? Bom, sabendo lua nós podemos começar a aprender *LÖVE*, a framework foda e open source para fazer joguinhos. Espero você lá!
