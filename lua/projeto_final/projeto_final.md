@@ -11,7 +11,7 @@ Essa parte do curso é 100% opcional, mas eu recomendo que você tente fazer um 
 Vou dividir o nosso progresso em duas partes: primeiro nós iremos focar na **geração** de continentes, e depois no **preenchimento** deles com florestas, montanhas e cidades. Para começar, vamos criar variáveis com os caracteres que irão representar cada um dos nossos "tipos de célula" por assim dizer:
 
 ``` Lua
-local water = "  "
+local water = "  " -- dois espaços
 local land = "⣿⣿"
 local grass = "ww"
 local tree = "⽊"
@@ -42,7 +42,7 @@ repeat
 until map.height and map.height > 0
 ```
 
-A função `tonumber()` transforma seu argumento em um número, se possível, e retorna nil caso essa conversão não seja possível. Como queremos que o mapa tenha dimensões positivas nós adicionamos uma condição de que `map.width` e `map.height` devem ser maiores que zero. 
+A função `tonumber()` transforma seu argumento em um número, se possível, e retorna nil caso essa conversão não seja possível. Como queremos que o mapa tenha dimensões positivas, nós adicionamos uma condição de que `map.width` e `map.height` devem ser maiores que zero. 
 
 Depois disso, vamos inicializar nossa matriz que conterá o mapa e preencher ela com barulho (distribuir 0's e 1's nela aleatóriamente, sendo que os 0's representam água e os 1's representam terra):
 
@@ -94,16 +94,16 @@ qual vai ser a largura do seu mapa? (digite um número)
 > 20
 e a altura? (digite outro número)
 > 10
-⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿〜〜⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿〜〜⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-〜⣿⣿⣿⣿〜〜〜〜〜⣿⣿⣿⣿〜⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿〜〜⣿⣿〜
-⣿⣿⣿⣿⣿⣿〜⣿⣿〜⣿⣿⣿⣿⣿⣿〜⣿⣿〜〜⣿⣿⣿⣿〜⣿⣿〜⣿⣿⣿⣿
-〜⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿〜〜⣿⣿⣿⣿〜⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
-⣿⣿⣿⣿⣿⣿⣿⣿〜⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿〜〜〜⣿⣿⣿⣿〜〜〜⣿⣿〜
-〜〜〜⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿〜⣿⣿⣿⣿⣿⣿〜〜〜〜〜〜〜〜
-⣿⣿⣿⣿〜〜〜⣿⣿⣿⣿〜⣿⣿〜⣿⣿〜〜⣿⣿〜⣿⣿⣿⣿⣿⣿〜⣿⣿
-⣿⣿〜〜⣿⣿〜⣿⣿〜〜⣿⣿〜〜⣿⣿〜〜〜⣿⣿〜〜⣿⣿〜
-〜⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿〜〜〜⣿⣿⣿⣿〜〜⣿⣿⣿⣿⣿⣿⣿⣿〜⣿⣿⣿⣿
-⣿⣿〜⣿⣿⣿⣿〜⣿⣿〜⣿⣿⣿⣿〜⣿⣿⣿⣿⣿⣿〜⣿⣿〜〜〜〜⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿    ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿    ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+  ⣿⣿⣿⣿          ⣿⣿⣿⣿  ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿    ⣿⣿  
+⣿⣿⣿⣿⣿⣿  ⣿⣿  ⣿⣿⣿⣿⣿⣿  ⣿⣿    ⣿⣿⣿⣿  ⣿⣿  ⣿⣿⣿⣿
+  ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿    ⣿⣿⣿⣿  ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿  ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿      ⣿⣿⣿⣿      ⣿⣿  
+      ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿  ⣿⣿⣿⣿⣿⣿                
+⣿⣿⣿⣿      ⣿⣿⣿⣿  ⣿⣿  ⣿⣿    ⣿⣿  ⣿⣿⣿⣿⣿⣿  ⣿⣿
+⣿⣿    ⣿⣿  ⣿⣿    ⣿⣿    ⣿⣿      ⣿⣿    ⣿⣿  
+  ⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿      ⣿⣿⣿⣿    ⣿⣿⣿⣿⣿⣿⣿⣿  ⣿⣿⣿⣿
+⣿⣿  ⣿⣿⣿⣿  ⣿⣿  ⣿⣿⣿⣿  ⣿⣿⣿⣿⣿⣿  ⣿⣿        ⣿⣿
 ```
 
 Ok, está tudo dando certo, mas pera aí, isso não parece muito um mapa né? é só um bolo de terra e água mal feito. Bem, é aí que entra o nosso algoritmo de geração de mapa com base em automatas celulares. Ele funciona da seguinte forma: nós vamos iterar sobre cada célula do mapa algumas vezes, e em cada uma das vezes nós vamos ver quantos dos 8 vizinhos desta célula são iguais a 1 (terra). Caso mais do que 4 vizinhos sejam terra, esta célula também se torna terra, caso contrário, ela se torna água. No final das contas isso vai criando aglomerações de terra e água que se assemelham mais a continentes do que essa bagunça que a gente fez aí em cima. Nossa função que faz uma iteração desse automata celular está aqui:
@@ -219,7 +219,7 @@ Isso conclui nossa sessão de geração de continentes, o próximo passo agora �
 
 ## Preenchendo continentes
 
-Meu plano para deixar esses mapas mais vivos se baseia em criar uma função capaz de espalhar casas, grama e montanhas de forma dinâmica. Para isso, vamos usar duas funções: uma que coloca distribui células do tipo especificado aleatóriamente pelo mapa, e outra que, a partir das posições onde estas células foras colocadas, espalha mais dessa mesma célula. Isso, em teoria, criaria o efeito de uma cidade crescendo ou uma mata se espalhando.
+Meu plano para deixar esses mapas mais vivos se baseia em criar uma função capaz de espalhar casas, grama e montanhas de forma dinâmica. Para isso, vamos usar duas funções: uma que distribui células do tipo especificado aleatóriamente pelo mapa, e outra que, a partir das posições onde estas células foram colocadas, espalha mais dessa mesma célula. Isso, em teoria, cria o efeito de uma cidade crescendo ou uma mata se espalhando ao redor de um ponto.
 
 Como nosso mapa é representado como uma matriz de números, vou também criar uma tabela que nos ajude a traduzir a string dos tipos de célula para seus respectivos IDs:
 
@@ -390,6 +390,7 @@ mapa gerado:
 adaptação:
 
 ![mapa 3 adaptado](https://i.imgur.com/EsshlHn.png)
+
 ## Conclusão
 
 UHUUUULLL chegamos ao fim desse humilde projeto :). Se você chegou até aqui, parabéns, o curso de lua está oficialmente e absolutamente terminado, espero que tenha aprendido algo legal! E se você fez seu próprio projeto ou adaptou esse aqui para o seu gosto, parabéns dobrado pra vc, pegue um bolo de presente: 🍰. Novamente, vejo você na sessão de LOVE2D!!
