@@ -6,7 +6,7 @@ LÖVE é uma framework mto fofa para desenvolvimento de jogos em lua. Aqui na in
 
 Se você estiver no Windows ou Mac, pode encontrar os links de download [aqui](https://love2d.org/), mas caso esteja em uma distribuição Linux baseada em Debian (como o Ubuntu), basta que rode o comando `sudo apt install love` no terminal.
 
-Para testar se a instalação deu certo, pode rodar o comando `love --version`, que deverá ter um output como esse: `LOVE 11.4 (Mysterious Mysteries)`.
+Para testar se a instalação deu certo, você pode rodar o comando `love --version`, que deverá ter um output como esse: `LOVE 11.4 (Mysterious Mysteries)`.
 
 ## Conhecendo a estrutura da API
 
@@ -34,7 +34,7 @@ A documentação da framework pode ser encontrada [neste site](https://love2d.or
 
 Além disso, também há uma grande lista de funções callback, com as quais nós vamos nos familiarizar aos poucos.
 
-Cada módulo contém **tipos**, **funções** e **enums** relacionados ao seu propósito. Por exemplo, o módulo `love.audio` tem o tipo `RecordingDevice`, a função `love.audio.play` e o enum `TimeUnit`.
+Cada módulo contém **tipos**, **funções** e **enums** relacionados a seu propósito. Por exemplo, o módulo `love.audio` tem o tipo `RecordingDevice`, a função `love.audio.play()` e o enum `TimeUnit`, tudo relacionado a audio.
 
 Os módulos que mais exploraremos nessa introdução serão:
 
@@ -246,4 +246,3 @@ end
 O botão pressionado está sendo comparado com **1** pois esse número representa o botão esquerdo, 2 representa o direito, e 3 o botão do meio. `x` e `y`, como você deve imaginar, são as coordenadas do cursor no momento em que o botão foi pressionado.
 
 E é isso. Agora nosso triângulo se move, muda de cor e se teletransporta - ingualzinho a um personagem de jogos eletrônicos.
-
