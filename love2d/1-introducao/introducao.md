@@ -246,3 +246,136 @@ end
 O botão pressionado está sendo comparado com **1** pois este número representa o botão esquerdo, 2 representa o direito, e 3 o botão do meio. `x` e `y`, como você deve imaginar, são as coordenadas do cursor no momento em que o botão foi pressionado.
 
 E é isso. Agora nosso triângulo se move, muda de cor e se teletransporta - ingualzinho a um personagem de jogos eletrônicos.
+
+## Renderizando imagens/gifs
+
+Eu sei que triângulos são extremamente legais e tudo mais, mas e se nós substituíssemos nosso triângulo por algo que parece mais vivo, como um **GATINHO**. Para isso, nós precisariamos de uma imagem dele, já que renderizar um gato composto de triângulos no __pelo__ seria bem difícil. Bom, como no love2d renderizar imagens e gifs é semelhante (renderizar um gif é renderizar cada frame seu como uma imagem diferente), nós vamos renderizar um **gif** de uma vez para pelo menos ver algo se mexendo na tela.
+
+O gif que estarei usando é [esse aqui](https://www.reddit.com/r/Catloaf/comments/yrvghr/found_it_the_very_rare_3d_360_degrees_catloaf/), mas você pode escolher outro se quiser (ou se o link tiver caído). Primeiro, criaremos uma pasta chamada "**assets**" no mesmo diretório que nosso `main.lua` está. Depois, dentro de `assets`, criaremos mais uma pasta chamada "**oiiai_cat_animation**" ou algo do tipo, e colocaremos nosso gif dentro dela. Por fim, vamos usar o `ffmpeg` para repartir nosso gif em todos os seus frames.
+
+Se você não tem o ffmpeg instalado, dê uma olhada no [site deles](https://www.ffmpeg.org/download.html), mas no linux tu pode só meter um `sudo apt install ffmpeg` e jaé.
+
+Com o ffmpeg instalado, use o comando abaixo dentro da pasta que contém o gif para dividi-lo em frames enumerados. Não esqueça de substituir o nome do gif pelo nome que você deu a ele.
+
+```
+ffmpeg -i ./oiiai_cat.gif frame-%3d.png
+```
+
+Com isso, você deve ter agora um monte de pngs prontos para serem renderizados, então bora partir pro código.
+
+Antes de mais nada, nós podemos apagar qualquer coisa no código que diga respeito ao triângulo, pois vamos abandonar ele de vez.
+
+No escopo global, vamos declarar uma tabela chamada `cat` para guardar todas as informações sobre nosso gato:
+
+``` Lua
+local cat = {}
+```
+
+Também vou declarar uma tabela `window` para guardar as dimensões da janela, assim a gente não precisa ficar "hardcodando" a altura e a largura da jenela em todo lugar:
+
+``` Lua
+-- ** no escopo global **
+local window = {}
+
+-- ** na função love.load() **
+window.width = 1000
+window.height = 800
+love.window.setMode(window.width, window.height)
+```
+
+e um pouco abaixo da declaração de `cat` vamos definir uma função `init_cat()`, que inicializa todos os atributos do gatinho, como sua posição, tamanho, os frames de sua animação e etc:
+
+``` Lua
+function init_cat()
+	cat.velocity = 10
+	cat.curr_frame = 1
+	cat.frame_delay = 0.03
+	cat.animation_timer = 0
+	cat.animation = {}
+
+	-- os caminhos finais pros frames são algo assim: ./assets/oiiai_cat_animation/frame-###.png
+	local frame_path_skeleton = "assets/oiiai_cat_animation/frame-"
+	
+	-- meu gif tem 190 frames, mas troque aqui 190 pelo número de frames do seu gif, caso tenha usado outro
+	for i = 1, 190 do
+		local frame_path = frame_path_skeleton
+		-- colocando 0 no começo de números baixos. Ex: 005
+		if i < 10 then
+			frame_path = frame_path.."00"
+		elseif i < 100 then
+			frame_path = frame_path.."0"
+		end
+		frame_path = frame_path..i..".png" -- finalizando com o número do frame e a extensão do arquivo
+		cat.animation[i] = love.graphics.newImage(frame_path) -- colocando o frame na array de animação
+	end
+
+	cat.width = cat.animation[1]:getWidth()
+	cat.height = cat.animation[1]:getHeight()
+	local x = (window.width / 2) - (cat.width / 2)
+	local y = (window.height / 2) - (cat.height / 2)
+	cat.position = {x = x, y = y}
+end
+```
+
+Aqui neste trecho estamos usando algumas funções e métodos novos, então vou explicar eles:
+
+- `love.graphics.newImage()`: cria um objeto do tipo "Image" com base no caminho do arquivo que você passa como argumento;
+- `:getWidth()`: um método que retorna a largura de uma imagem (e de texturas no geral);
+- `:getHeight()`: o mesmo que o de cima, mas para a altura.
+
+Uma parte da função que exige atenção é o loop, pois é ele que preenche nossa array `cat.animation` com os frames do gif. E como sempre, não podemos esquecer de chamar nossa função `init_cat()` dentro do `love.load()`.
+
+O próximo passo é criar a lógica que vai passar de um frame da animação para o próximo, loopando quando a animação chegar no final. Essa lógica, como é de esperar, ficará na função `love.update()`:
+
+``` Lua
+cat.animation_timer = cat.animation_timer + dt
+if cat.animation_timer > cat.frame_delay then
+	cat.animation_timer = 0
+	cat.curr_frame = cat.curr_frame + 1
+	
+	-- loopando a animação
+	if cat.curr_frame > #cat.animation then
+		cat.curr_frame = 1
+	end
+end
+```
+
+Este trecho é relativamente simples, nós vemos se o tempo entre um frame e outro já passou, e caso sim, nós incrementamos o frame atual (`cat.curr_frame`), loopando a animação caso necessário.
+
+Para nós podermos mover o bixano pela tela - como nós estávamos movendo o triângulo - vamos modificar a função `update_movement()` para alterar a posição do gatito:
+
+``` Lua
+function update_movement()
+	if love.keyboard.isDown("w") then
+		cat.position.y = cat.position.y - cat.velocity
+	end
+	if love.keyboard.isDown("a") then
+		cat.position.x = cat.position.x - cat.velocity
+	end
+	if love.keyboard.isDown("s") then
+		cat.position.y = cat.position.y + cat.velocity
+	end
+	if love.keyboard.isDown("d") then
+		cat.position.x = cat.position.x + cat.velocity
+	end
+end
+```
+
+E então chamar ela dentro do `love.update()`, para que a atualização do movimento ocorra em todo frame.
+
+Agora só falta o toque final para colocarmos esse gatinho na tela, chamar a função do love que desenha imagens dentro do `love.draw()`. A função que usamos para isso é a `love.graphics.draw()`, passando como argumentos a **imagem** e as posições **x** e **y**:
+
+``` Lua
+function love.draw()
+	-- limpando a tela com um azul acinzentado
+	love.graphics.clear(0.25, 0.25, 0.5)
+	-- desenhando o gatinho na posição 
+	love.graphics.draw(cat.animation[cat.curr_frame], cat.position.x, cat.position.y)
+end
+```
+
+E PRONTO! agora se tudo deu certo, tu tem um gif que anda pela tela (no meu caso um gatinho giratório).
+
+Também vou propor um mini desafio aqui para ver se vc tá manjando. Tente fazer com que clicar "espaço" no teclado faça com que o gif se reverta (começe a tocar de trás para frente). O resultado final deve ficar próximo disso:
+
+![gatinho que gira e inverte](https://i.imgur.com/LftBRXz.mp4)
