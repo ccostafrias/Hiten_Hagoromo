@@ -381,3 +381,72 @@ E PRONTO! agora se tudo deu certo, tu tem um gif que anda pela tela (no meu caso
 OBS: finge que ele está girando, não consegui colocar um vídeo aqui, só imagem
 
 Também vou propor um mini desafio aqui para ver se vc tá manjando. Tente fazer com que clicar "espaço" no teclado faça com que o gif se reverta (começe a tocar de trás para frente).
+
+## Tocando áudios
+
+Outra parte crucial de qualquer jogo é o áudio. Então, como era de se imaginar, o love oferece funções para manipular áudio no módulo `love.audio`.
+
+Minha ideia para implementar áudio neste programinha é fazer o gatito falar "oiiai" sob comando, que nem o [gato daquele meme](https://www.youtube.com/watch?v=ZHgyQGoeaB0&ab_channel=GoldfishFan).
+
+Basicamente, quando você apertar `o` no teclado, o áudio do gatinho falando "o" tocará, quando apertar `i`, o gatinho falará "i" e quando apertar `u`, o gatinho dirá "a". Para isso, nós poderíamos usar as funções do módulo `love.audio` que eu mencionei, como no exemplo abaixo:
+
+``` Lua
+cat_o = love.audio.newSource("cat_o.ogg", "static") -- cria uma variável com o áudio
+cat_o:play() -- toca o áudio
+```
+
+Mas, ao tentar fazer desse jeito, notei que o love tem um problema ao tocar pequenos áudio de repetidamente de forma responsiva. Esse mesmo problema foi percebido por outros anteriormente, o que deu origem ao belo pacote [TEsound](https://love2d.org/wiki/TEsound).
+
+Este pacote nos permite tocar áudio de forma extremamente simples e com resultado mais satisfatório do que o padrão do love.
+
+Ok, mas antes de mais nada, vamos dar um passo para trás e criar arquivos com nossos áudios.
+
+Se você conhecer algum jeito melhor, siga em frente, mas o processo que eu realizei foi o seguinte:
+
+- Primeiro eu baixei [esse áudio](https://tuna.voicemod.net/sound/05e1f76c-d7a6-4bcc-b33d-95d6a66dd02a) inteiro, que contém as três vogais que nós queremos que ele fale;
+- Depois, separei as vogais em três audios separados ("cat_a.mp3", "cat_i.mp3" e "cat_o.mp3") usando [este site](https://mp3cut.net/);
+- Então converti os .mp3 em .ogg com [este outro site](https://convertio.co/pt/mp3-ogg/), e
+- Coloquei os áudios em um diretório "oiiai_sounds", dentro da pasta "assets" que nós já havíamos criado. 
+
+Pronto, agora com os 3 áudios prontos, vamos voltar pro TEsound. Na [página deles](https://love2d.org/wiki/TEsound) está descrito o processo de como usar o pacote. Basicamente, você só precisa criar um arquivo `TEsound.lua` no mesmo diretório do nosso `main.lua` contendo o código [deste arquivo](https://github.com/drhayes/TESound/blob/master/tesound.lua). Depois, no topo do `main.lua` é só incluir o pacote com a seguinte linha:
+
+``` Lua
+require "TEsound"
+```
+
+E cabou.
+
+Agora, usar o pacote de fato é muito simples. Dentro do callback `love.keypressed()`, que deve estar mais ou menos assim
+
+``` Lua
+function love.keypressed(key, scancode, isrepeat)
+	if key == "escape" then
+		love.event.quit()
+	end
+end
+```
+
+nós vamos incluir o código das teclas que tocarão os barulhinhos.
+
+``` Lua
+-- OBS: o áudio "a" toca na tecla `u` pois a tecla `a` já está sendo usada para o movimento.
+if key == "u" then
+	TEsound.play("assets/oiiai_sounds/cat_a.ogg", "static")
+end
+if key == "i" then
+	TEsound.play("assets/oiiai_sounds/cat_i.ogg", "static")
+end
+if key == "o" then
+	TEsound.play("assets/oiiai_sounds/cat_o.ogg", "static")
+end
+```
+
+Tanto este segundo argumento do TEsound.play quanto o do `love.audio.newSource()` significam a mesma coisa. Eles podem ser ou `"static"`, para áudios curtos que podem ser carregados inteiros de uma vez, ou `"stream"`, para áudios longos, que devem ser carregados aos poucos.
+
+E é basicamente isso, nós tocamos áudio usando um módulo externo para love! Se você quiser, dê uma experimentada com as outras funções do TEsound, pois essa biblioteca é bem elegante e bonitinha.
+
+## Conclusão
+
+Espero que você tenha gostado de conhecer essa framework e tenha enxergado ao menos um pouco de beleza nela.
+
+Apenas com o que nós vimos nesta introdução, eu já diria que é possível criar um pequenino jogo. Contudo, como você e eu somos ambiciosos, vamos tentar aprofundar ao máximo nosso entendimento desta framework daqui pra frente. Até a próxima sessão! :D
