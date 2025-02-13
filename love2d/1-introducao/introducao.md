@@ -34,14 +34,13 @@ A documentação da framework pode ser encontrada [neste site](https://love2d.or
 
 Além disso, também há uma grande lista de funções callback, com as quais nós vamos nos familiarizar aos poucos.
 
-Cada módulo contém **tipos**, **funções** e **enums** relacionados a seu propósito. Por exemplo, o módulo `love.audio` tem o tipo `RecordingDevice`, a função `love.audio.play()` e o enum `TimeUnit`, tudo relacionado a audio.
+Cada módulo contém **tipos**, **funções** e **enums** relacionados a seu propósito. Por exemplo, o módulo `love.audio` tem o tipo `RecordingDevice`, a função `love.audio.play()` e o enum `TimeUnit`: tudo relacionado a áudio.
 
 Os módulos que mais exploraremos nessa introdução serão:
 
 - love.graphics
 - love.keyboard
 - love.mouse
-- love.window
 
 ## As 3 funções essenciais
 
@@ -78,7 +77,7 @@ Com isso, vamos declarar as variáveis que estaremos usando nesse programa. Nós
 ``` Lua
 local triangle_vertices -- coordenadas dos vértices em formato {x1, y1, x2, y2, x3, y3}
 local triangle_color -- cor em formato {r, g, b, a}
-local total_time -- em segundos
+local total_time -- tempo decorrido desde o começo da execução do programa em segundos
 ```
 
 Depois, vamos para as 3 funções principais que vimos antes, começando pela `love.load()`:
@@ -94,6 +93,8 @@ function love.load()
 	love.window.setMode(800, 600) -- tamanho da janela
 end
 ```
+
+Aqui, nós definimos as coordenadas **x** e **y** de cada um dos vértices, setamos a cor inicial do triângulo para **vermelho**, o tempo decorrido para **zero** e o tamanho da janela para **800x600** (usando a função `setMode()`, do módulo `love.window`).
 
 Agora vou pular a função `love.update()` por um instante e ir direto para a `love.draw()`. Ela chamará duas outras funções do love:
 
@@ -166,7 +167,7 @@ end
 
 E nós iremos chamar ela tanto no `love.load()` quanto no `love.update()`.
 
-Agora vamos criar uma função `update_movement()`, que irá conferir se as teclas **w**, **a**, **s** e **d** estão pressionadas e atualizar a posição do triângulo de acordo:
+Agora, vamos criar uma função `update_movement()`, que irá conferir se as teclas **w**, **a**, **s** e **d** estão pressionadas, atualizando a posição do triângulo de acordo:
 
 ``` Lua
 function update_movement()
@@ -249,9 +250,11 @@ E é isso. Agora nosso triângulo se move, muda de cor e se teletransporta - ing
 
 ## Renderizando imagens/gifs
 
-Eu sei que triângulos são extremamente legais e tudo mais, mas e se nós substituíssemos nosso triângulo por algo que parece mais vivo, como um **GATINHO**. Para isso, nós precisariamos de uma imagem dele, já que renderizar um gato composto de triângulos no __pelo__ seria bem difícil. Bom, como no love2d renderizar imagens e gifs é semelhante (renderizar um gif é renderizar cada frame seu como uma imagem diferente), nós vamos renderizar um **gif** de uma vez para pelo menos ver algo se mexendo na tela.
+Eu sei que triângulos são extremamente legais e tudo mais, mas e se nós substituíssemos nosso triângulo por algo que parece mais vivo, como um **GATINHO**?? Para isso, nós precisariamos de uma imagem dele, já que renderizar um gato composto de triângulos no __pelo__ seria bem difícil. Bom, como no love2d renderizar imagens e gifs é semelhante (renderizar um gif é renderizar cada frame seu como uma imagem diferente), nós vamos renderizar um **gif** de uma vez para pelo menos ver algo se mexendo na tela.
 
-O gif que estarei usando é [esse aqui](https://www.reddit.com/r/Catloaf/comments/yrvghr/found_it_the_very_rare_3d_360_degrees_catloaf/), mas você pode escolher outro se quiser (ou se o link tiver caído). Primeiro, criaremos uma pasta chamada "**assets**" no mesmo diretório que nosso `main.lua` está. Depois, dentro de `assets`, criaremos mais uma pasta chamada "**oiiai_cat_animation**" ou algo do tipo, e colocaremos nosso gif dentro dela. Por fim, vamos usar o `ffmpeg` para repartir nosso gif em todos os seus frames.
+O gif que estarei usando é [esse aqui](https://www.reddit.com/r/Catloaf/comments/yrvghr/found_it_the_very_rare_3d_360_degrees_catloaf/) (ou [esse](https://media.tenor.com/65mRO-L3k2EAAAAj/spinning-maxwell.gif), em resolução menor), mas você pode escolher outro se quiser (ou se os links tiverem caído).
+
+zPrimeiro, criaremos uma pasta chamada "**assets**" no mesmo diretório que nosso `main.lua` está. Depois, dentro de `assets`, criaremos mais uma pasta chamada "**oiiai_cat_animation**" ou algo do tipo, e colocaremos nosso gif dentro dela. Por fim, vamos usar o `ffmpeg` para repartir nosso gif em todos os seus frames.
 
 Se você não tem o ffmpeg instalado, dê uma olhada no [site deles](https://www.ffmpeg.org/download.html), mas no linux tu pode só meter um `sudo apt install ffmpeg` e jaé.
 
@@ -271,7 +274,7 @@ No escopo global, vamos declarar uma tabela chamada `cat` para guardar todas as 
 local cat = {}
 ```
 
-Também vou declarar uma tabela `window` para guardar as dimensões da janela, assim a gente não precisa ficar "hardcodando" a altura e a largura da jenela em todo lugar:
+Também vou declarar uma tabela `window` para guardar as dimensões da janela, assim a gente não vai precisar ficar "hardcodando" a altura e a largura da jenela em outros lugares:
 
 ``` Lua
 -- ** no escopo global **
@@ -395,7 +398,7 @@ cat_o = love.audio.newSource("cat_o.ogg", "static") -- cria uma variável com o 
 cat_o:play() -- toca o áudio
 ```
 
-Mas, ao tentar fazer desse jeito, notei que o love tem um problema ao tocar pequenos áudio de repetidamente de forma responsiva. Esse mesmo problema foi percebido por outros anteriormente, o que deu origem ao belo pacote [TEsound](https://love2d.org/wiki/TEsound).
+Mas, ao tentar fazer desse jeito, notei que o love tem um problema ao tocar pequenos áudios repetidamente de forma responsiva. Esse mesmo problema foi percebido por outros anteriormente, o que deu origem ao belo pacote [TEsound](https://love2d.org/wiki/TEsound).
 
 Este pacote nos permite tocar áudio de forma extremamente simples e com resultado mais satisfatório do que o padrão do love.
 
