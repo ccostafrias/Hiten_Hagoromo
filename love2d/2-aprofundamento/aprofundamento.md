@@ -87,3 +87,119 @@ A próxima parte do código - o loop duplo - não passa de uma etapa de preenchi
 
 Em suma, esse loop duplo cria regiões retangulares que designam nossos frames, começando pelo canto superior esquerdo da sprite sheet e scaneando ela da esquerda para a direita, cima para baixo, até que o fim da imagem seja alcançado ou que `i` ultrapasse o número de frames da nossa animação. Ao fazer isso, os quads vão sendo colocados em nossa array `frames`, que posteriormente será útil como você bem verá.
 
+Agora vamos ver como de fato renderizar as animações. Tudo gira em torno do método `update` da classe "Animation". Esta função recebe um `dt` (delta time, o tempo entre o último frame e o atual) e atualiza nossa animação de acordo.
+
+``` Lua
+function Animation:update(dt)
+    self.timer = self.timer + dt
+    -- se já tiver passado a duração de um frame
+    if self.timer > self.frameDur then
+    	-- reseta o timer
+        self.timer = 0
+        -- e passa para o próximo frame
+        self.currFrame = self.currFrame + 1
+        -- se já tiver passado do último frame
+        if self.currFrame > #self.frames then
+        	-- volta pro primeiro frame de loop se a animação for ciclica
+            self.currFrame = self.looping and self.loopFrame or #self.frames
+        end
+    end
+end
+```
+
+Ok, então temos uma forma de criar animações e uma forma de rodar elas, então bora ver esse sistema sendo usado na prática.
+
+Neste jogo, as sprite sheets de um personagem (as imagens de suas animações de caminhada, defesa, etc) são guardadas na própria instância do personagem (uma decisão questionável, eu sei...), e as animações também são guardadas no personagem. Tanto as sprite sheets quanto as animações em si são guardadas em uma tabela, mais ou menos assim:
+
+``` Lua
+function Player.new(argumentos bla bla bla)
+	local player = setmetatable({}, Player)
+
+	-- { outras propriedades... }
+
+	player.state = IDLE      -- define o estado atual do jogador, estreitamente relacionado às animações
+	player.spriteSheets = {} -- no tipo imagem do love
+	player.animations = {}   -- as chaves são estados e os valores são Animações
+
+	return player
+end
+```
+
+Como dizem os comentários, o `player.state` guarda o estado atual do jogador (como "parado", "caminhando", "atacando", etc). Como cada estado tem sua própria animação, usamos os estados como chaves para as tabelas de sprite sheets e de animações. Logo, em nossa função `love.update(dt)`, fazemos algo do gênero:
+
+``` Lua
+function love.update(dt)
+	-- { fazendo outras coisas }
+	-- ...
+	player.animations[player.state]:update(dt)
+end
+```
+
+E por fim, em nossa função `love.draw()`, chamamos uma função que renderiza o jogador, que por sua vez faz algo assim:
+
+``` Lua
+-- aqui, p é o player
+local animation = p.animations[p.state]
+local quad = animation.frames[animation.currFrame]
+love.graphics.draw(p.spriteSheets[p.state], quad, p.x, p.y)
+```
+
+Neste trecho de código, que é o que na prática desenha o jogador na tela em sua posição correta e no frame correto da animação correta, nós fazemos o uso de tudo que vimos nesta seção: a classe `Animation`, `Quads` e - é claro - *Sprite Sheets*.
+
+## Canvas e split-screen
+
+Um *canvas* é uma espécie de "janela virtual para renderização". Basicamente, da mesma forma que você geralmente renderiza formas, imagens, animações e tudo mais em uma *janela*, você pode renderizar em um canvas. E então, você pode _renderizar um canvas em uma janela_, ou renderizar um canvas em outro canvas, e assim em diante. Os canvas não são visíveis a princípio, então até que você renderize eles na janela de sua aplicação, qualquer coisa presente neles não aparecerão em lugar nenhum.
+
+Para o conceito "canvas" ficar mais claro, vou dar um exemplo. Vamos supor que você queira que seu jogo tenha um mini-mapa no canto da tela. Ao invés de você renderizar cada parte de mini-mapa diretamente na tela, você pode renderizá-las em um canvas e então renderizar este canvas na tela de uma vez só.
+
+Para criar um novo canvas, utilizamos a função `love.graphics.newCanvas()`, passando como argumentos a largura e a altura do canvas que queremos. Esta função nos retornará um objeto `Canvas`, o qual nós veremos como usar agora.
+
+O processo de usar um canvas é relativamente simples. Uma vez que você criou seu canvas, basta que, dentro da função `love.draw()`, você *ative* seu canvas, *desenhe nele* e depois *desenhe ele na tela*.
+
+``` Lua
+-- ativando o canvas
+love.graphics.setCanvas(canvas)
+-- desenhando algo nele (um mini mapa, por exemplo...)
+love.graphics.draw(minimap, minimap.x, minimap.y)
+-- desativando o canvas (ou ativando o canvas da janela inteira)
+love.graphics.setCanvas()
+-- desenhando o canvas na janela
+love.graphics.draw(canvas, canvasPos.x, canvasPos.y)
+```
+
+Aqui, nós usamos apenas uma nova função, mas que nos serviu dois propósitos: a `love.graphics.setCanvas()`. Quando ela é chamada recebendo um canvas como argumento, ela ativa este canvas, e a partir de então qualquer operação de renderização é aplicada no canvas ativo. Contudo, quando ela é chamada sem receber argumentos, ela ativa o "canvas padrão", digamos assim, que é a própria janela na qual seu jogo está rodando.
+
+Na última linha, veja que nós estamos renderizando o canvas como se ele fosse uma imagem: usando a função `love.graphics.draw()`.
+
+Simples, não? Bem, esta ferramenta, apesar de simples, nos abre algumas janelas (ba dum - tsss) que antes seriam muito inacessíveis. Por exemplo, agora podemos implementar *Split Screen* em nossos jogos. Basta que a visão de cada jogador seja desenhada em seu próprio canvas, e então os canvas sejam desenhados em suas respectivas posições na tela.
+
+Caso você viva em baixo de uma estrela do mar que vive em baixo de uma pedra, _split screen_ é uma forma de exibir múltiplas perspectivas em uma única tela dividindo-a em seções. Se você já viu como a tela de Mario Kart fica quando mais de uma pessoa está jogando no mesmo console/computador: isso é split screen.
+
+No jogo que estou implementando, por exemplo, tenho uma classe chamada `Camera`. Cada instância de câmera segue o personagem de um jogador. Para que o split screen deste jogo funcione, eu associei um canvas a cada câmera. Dessa forma, na função `love.draw()`, algo do tipo acontece:
+
+``` Lua
+function love.draw()
+	-- iterando por todas as câmeras, cada uma possui um canvas e segue um jogador
+	for i, c in pairs(cameras) do
+		love.graphics.setCanvas(c.canvas)
+		love.graphics.clear(0.0, 0.0, 0.0, 1.0)
+		renderWorld(i)
+		renderPlayers(i)
+		love.graphics.setCanvas()
+		love.graphics.draw(c.canvas, c.canvasPos.x, c.canvasPos.y)
+	end
+end
+```
+
+Se você prestou atenção nos exemplos de código anteriores, este trecho não deve te surpreender muito. Tudo que estamos fazendo aqui é seguir as etapas do uso de canvases (?).
+
+1. Ativar o canvas
+2. Renderizar o conteúdo do canvas
+3. Desativar o canvas
+4. Desenhar o canvas na tela
+
+Não entrarei nos detalhes da implementação da classe `Camera` ou das funções `renderWorld()` e `renderPlayers()`, pois isto exigiria muito tempo e não incrementaria muito em seu conhecimento sobre Love2D, mas vou anexar aqui uma imagem do split screen funcionando:
+
+![split screen funcionando](../../splitscreen.png)
+
+Na esquerda temos a câmera do personagem *Mush*, e na direita temos a câmera do personagem *Shroom*. Conforme eles se mexem, as câmeras os acompanham. É isso! :D
