@@ -24,9 +24,9 @@ A minha ideia para esta jornada é a seguinte
 
 Ou seja, o Hiten Hagoromo vai acontecer em duas etapas: aprender lua e aprender LÖVE. Espero te ver no final! ;)
 
-![Logo do Lua](./assets/Lua_logo.png =250x250)
+![Logo do Lua](./assets/Lua_logo.png)
 
-![Logo do LOVE2D](./assets/Love2d_logo.png =250x250)
+![Logo do LOVE2D](./assets/Love2d_logo.png)
 
 ## Aviso
 
