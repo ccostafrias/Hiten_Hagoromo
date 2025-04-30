@@ -35,3 +35,10 @@ Eu, Jonyski, estou escrevendo o conteúdo deste dojo ENQUANTO aprendo sobre lua 
 - [Manual de referência oficial de lua](https://www.lua.org/manual/5.4/)
 - [Tutoriais oficiais de lua](http://lua-users.org/wiki/TutorialDirectory)
 - [Documentação oficial do LÖVE: a GOAT](https://love2d.org/wiki/love)
+
+## Agradecimentos especiais
+
+Faço aqui meus agradecimentos especiais a quem colaborou com o desenvolvimento do curso:
+
+- Yukina (Mari): Pelas correções gramaticais e pelo apoio no geral, manja muito <3.
+- Camila: Pelos feedbacks muito sensatos, sem eles o projeto estaria bem mais capenga.
