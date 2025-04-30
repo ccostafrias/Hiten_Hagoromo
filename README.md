@@ -32,7 +32,6 @@ Ou seja, o Hiten Hagoromo vai acontecer em duas etapas: aprender lua e aprender 
 
 Eu, Jonyski, estou escrevendo o conteúdo deste dojo ENQUANTO aprendo sobre lua e LÖVE, então não há nenhum profissional ou especialista por trás deste curso diretamente. No entanto, eu tenho confiança de que consigo criar aqui um conteúdo de qualidade e de valor. Mas, se você achar alguma informação errada, incompleta ou confusa no decorrer do dojo, fique a vontade para me contatar (@Jonyski no discord e no telegram). Contudo, entretanto e todavia, as informações que serão passadas para você neste dojo não foram tiradas das vozes na minha cabeça, e eu vou tentar sempre que possível citar as minhas fontes ao longo do caminho. Então se você apenas está curioso para saber mais sobre algum tópico, ou tem alguma dúvida e tem vergonha de me perguntar, acesse minhas fontes e se divirta. A lista das principais fontes que vou estar usando é essa daqui:
 
-- (Manual de referência oficial de lua)[https://www.lua.org/manual/5.4/](https://www.lua.org/manual/5.4/)
-- (Tutoriais oficiais de lua)[http://lua-users.org/wiki/TutorialDirectory](http://lua-users.org/wiki/TutorialDirectory)
-- (Documentação oficial do LÖVE: a GOAT)[https://love2d.org/wiki/love](https://love2d.org/wiki/love)
-- E é claro, conversas intermináveis com o chatGPT
+(Manual de referência oficial de lua)[https://www.lua.org/manual/5.4/](https://www.lua.org/manual/5.4/)
+(Tutoriais oficiais de lua)[http://lua-users.org/wiki/TutorialDirectory](http://lua-users.org/wiki/TutorialDirectory)
+(Documentação oficial do LÖVE: a GOAT)[https://love2d.org/wiki/love](https://love2d.org/wiki/love)
