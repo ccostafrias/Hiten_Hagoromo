@@ -2,7 +2,7 @@
 
 Este é um "dojo" feito para ensinar lua e LÖVE para os membros da Conway: entidade/grupo de estudos de desenvolvimento de jogos e computação gráfica da USP-Leste. Este dojo (e a entidade, de forma mais abrangente) é inspirado naquele de python oferecido pelo HYPE; entidade de ciência de dados e IA da EACH.
 
-![./assets/Hiten_Hagoromo.jpg]
+![Hiten Hagoromo, a Sonda Lunar](./assets/Hiten_Hagoromo.jpg)
 
 ## Requisitos prévios
 
@@ -24,9 +24,9 @@ A minha ideia para esta jornada é a seguinte
 
 Ou seja, o Hiten Hagoromo vai acontecer em duas etapas: aprender lua e aprender LÖVE. Espero te ver no final! ;)
 
-![Logo do Lua](./assets/Lua_logo.png)
+![Logo do Lua](./assets/Lua_logo.png =250x250)
 
-![Logo do LOVE2D](./assets/Love2d_logo.png)
+![Logo do LOVE2D](./assets/Love2d_logo.png =250x250)
 
 ## Aviso
 
