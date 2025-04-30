@@ -4,10 +4,10 @@ Ok, agora que já entendemos como funciona o básico do LÖVE, como sua iniciali
 
 O plano é:
 
-- Falaremos sobre como usar *Sprite Sheets* para criar animações;
-- Depois, vamos falar sobre o uso de *Canvas* para renderizar certos elementos em suas próprias "janelas virtuais";
-- Em seguida, vamos ver um pouco de *Particle Systems* (Sistemas de Partícula);
-- Então, vamos falar um pouquito sobre *Threads* do LOVE, e
+- Falaremos sobre como usar **Sprite Sheets** para criar animações;
+- Depois, vamos falar sobre o uso de **Canvas** para renderizar certos elementos em suas próprias "janelas virtuais";
+- Em seguida, vamos ver um pouco de **Particle Systems** (Sistemas de Partícula);
+- Então, vamos falar um pouquito sobre **Threads** do LOVE, e
 - Por fim, vamos bater um papinho final sobre desenvolvimento de jogos, Love2D, e para onde ir agora que você concluiu o curso.
 
 Para explicar essas coisas, vou utilizar exemplos reais de um jogo que estou desenvolvendo, chamado "MushRooms". Contudo, como você - leitor - não possui o contexto inteiro do código do jogo, vou tomar o máximo de cuidado nas explicações e tentar não te deixar perdido.
@@ -16,7 +16,7 @@ Parece bom? Então bó
 
 ## Animações com Sprite Sheets
 
-Na introdução a Love, nós vimos que é possível renderizar uma "animação" separando seus frames em imagens diferentes e então desenhando elas uma de cada vez. Contudo, esse processo é muito limitado, desorganizado e demorado. Ao invés de fazer isso toda vez que quisermos adicionar uma animação para nosso jogo, vamos usar a estratégia dos verdadeiros desenvolvedores de jogos: *_sprite sheets_*.
+Na introdução a Love, nós vimos que é possível renderizar uma "animação" separando seus frames em imagens diferentes e então desenhando elas uma de cada vez. Contudo, esse processo é muito limitado, desorganizado e demorado. Ao invés de fazer isso toda vez que quisermos adicionar uma animação para nosso jogo, vamos usar a estratégia dos verdadeiros desenvolvedores de jogos: **_sprite sheets_**.
 
 Sprite sheets são imagens que reúnem todos os frames de uma ou mais animações. Os frames ficam alinhados em fileiras e colunas, então o que nós fazemos para renderizar uma animação usando sprite sheets é iterar sobre essas fileiras de frames.
 
@@ -144,17 +144,17 @@ local quad = animation.frames[animation.currFrame]
 love.graphics.draw(p.spriteSheets[p.state], quad, p.x, p.y)
 ```
 
-Neste trecho de código, que é o que na prática desenha o jogador na tela em sua posição correta e no frame correto da animação correta, nós fazemos o uso de tudo que vimos nesta seção: a classe `Animation`, `Quads` e - é claro - *Sprite Sheets*.
+Neste trecho de código, que é o que na prática desenha o jogador na tela em sua posição correta e no frame correto da animação correta, nós fazemos o uso de tudo que vimos nesta seção: a classe `Animation`, `Quads` e - é claro - **Sprite Sheets**.
 
 ## Canvas e split-screen
 
-Um *canvas* é uma espécie de "janela virtual para renderização". Basicamente, da mesma forma que você geralmente renderiza formas, imagens, animações e tudo mais em uma *janela*, você pode renderizar em um canvas. E então, você pode _renderizar um canvas em uma janela_, ou renderizar um canvas em outro canvas, e assim em diante. Os canvas não são visíveis a princípio, então até que você renderize eles na janela de sua aplicação, qualquer coisa presente neles não aparecerão em lugar nenhum.
+Um **canvas** é uma espécie de "janela virtual para renderização". Basicamente, da mesma forma que você geralmente renderiza formas, imagens, animações e tudo mais em uma **janela**, você pode renderizar em um canvas. E então, você pode _renderizar um canvas em uma janela_, ou renderizar um canvas em outro canvas, e assim em diante. Os canvas não são visíveis a princípio, então até que você renderize eles na janela de sua aplicação, qualquer coisa presente neles não aparecerão em lugar nenhum.
 
 Para o conceito "canvas" ficar mais claro, vou dar um exemplo. Vamos supor que você queira que seu jogo tenha um mini-mapa no canto da tela. Ao invés de você renderizar cada parte de mini-mapa diretamente na tela, você pode renderizá-las em um canvas e então renderizar este canvas na tela de uma vez só.
 
 Para criar um novo canvas, utilizamos a função `love.graphics.newCanvas()`, passando como argumentos a largura e a altura do canvas que queremos. Esta função nos retornará um objeto `Canvas`, o qual nós veremos como usar agora.
 
-O processo de usar um canvas é relativamente simples. Uma vez que você criou seu canvas, basta que, dentro da função `love.draw()`, você *ative* seu canvas, *desenhe nele* e depois *desenhe ele na tela*.
+O processo de usar um canvas é relativamente simples. Uma vez que você criou seu canvas, basta que, dentro da função `love.draw()`, você **ative** seu canvas, **desenhe nele** e depois **desenhe ele na tela**.
 
 ``` Lua
 -- ativando o canvas
@@ -171,7 +171,7 @@ Aqui, nós usamos apenas uma nova função, mas que nos serviu dois propósitos:
 
 Na última linha, veja que nós estamos renderizando o canvas como se ele fosse uma imagem: usando a função `love.graphics.draw()`.
 
-Simples, não? Bem, esta ferramenta, apesar de simples, nos abre algumas janelas (ba dum - tsss) que antes seriam muito inacessíveis. Por exemplo, agora podemos implementar *Split Screen* em nossos jogos. Basta que a visão de cada jogador seja desenhada em seu próprio canvas, e então os canvas sejam desenhados em suas respectivas posições na tela.
+Simples, não? Bem, esta ferramenta, apesar de simples, nos abre algumas janelas (ba dum - tsss) que antes seriam muito inacessíveis. Por exemplo, agora podemos implementar **Split Screen** em nossos jogos. Basta que a visão de cada jogador seja desenhada em seu próprio canvas, e então os canvas sejam desenhados em suas respectivas posições na tela.
 
 Caso você viva em baixo de uma estrela do mar que vive em baixo de uma pedra, _split screen_ é uma forma de exibir múltiplas perspectivas em uma única tela dividindo-a em seções. Se você já viu como a tela de Mario Kart fica quando mais de uma pessoa está jogando no mesmo console/computador: isso é split screen.
 
@@ -202,15 +202,15 @@ Não entrarei nos detalhes da implementação da classe `Camera` ou das funçõe
 
 ![split screen funcionando](../../assets/splitscreen.png)
 
-Na esquerda temos a câmera do personagem *Mush*, e na direita temos a câmera do personagem *Shroom*. Conforme eles se mexem, as câmeras os acompanham. É isso! :D
+Na esquerda temos a câmera do personagem **Mush**, e na direita temos a câmera do personagem **Shroom**. Conforme eles se mexem, as câmeras os acompanham. É isso! :D
 
 ## Sistemas de Partículas
 
-Algo muito bacana que o Love2D oferece em sua API é o *Sistema de Partículas* (_Particle Systems_). Isto se trata de uma forma de gerar efeitos dinâmicos com partículas para embelezar o seu jogo, tornando a criação de efeitos visuais de fumaça, fogo, _brilhinhos_ - entre outros - muito mais fácil.
+Algo muito bacana que o Love2D oferece em sua API é o **Sistema de Partículas** (_Particle Systems_). Isto se trata de uma forma de gerar efeitos dinâmicos com partículas para embelezar o seu jogo, tornando a criação de efeitos visuais de fumaça, fogo, _brilhinhos_ - entre outros - muito mais fácil.
 
 Como exemplo, vamos implementar aqui um efeito de "gás tóxico" sendo emitido de um dos personagens do jogo utilizando sistemas de partícula.
 
-Para criar um efeito de partículas, basta chamar chamar a função `love.graphics.newParticleSystem()` passando como argumentos uma *imagem* (que será a forma de nossas partículas) e um número (representando o limite de partículas simultâneas que seu sistema de partículas vai suportar). Assim:
+Para criar um efeito de partículas, basta chamar chamar a função `love.graphics.newParticleSystem()` passando como argumentos uma **imagem** (que será a forma de nossas partículas) e um número (representando o limite de partículas simultâneas que seu sistema de partículas vai suportar). Assim:
 
 ``` Lua
 local particleImg = love.graphics.newImage("assets/sprites/circle.png")
@@ -279,9 +279,9 @@ E é isso! O efeito final, no caso do exemplo de agora a pouco (o gás tóxico r
 
 ## Threads
 
-Para podermos executar códigos em *paralelo* (e não em concorrência, como faziamos com as _co-rotinas_) o Love nos oferece o módulo `love.thread`.
+Para podermos executar códigos em **paralelo** (e não em concorrência, como faziamos com as _co-rotinas_) o Love nos oferece o módulo `love.thread`.
 
-Para criarmos uma *thread* a partir de um arquivo `.lua`, basta que chamemos a função `love.thread.newThread()` passando como argumento o caminho para o arquivo. Esta função nos retornará um objeto do tipo `Thread`, que nós podemos então botar para rodar chamando o método `Thread:start()`, assim:
+Para criarmos uma **thread** a partir de um arquivo `.lua`, basta que chamemos a função `love.thread.newThread()` passando como argumento o caminho para o arquivo. Esta função nos retornará um objeto do tipo `Thread`, que nós podemos então botar para rodar chamando o método `Thread:start()`, assim:
 
 ``` Lua
 thread = love.thread.newThread("parallel_task.lua")
@@ -305,7 +305,7 @@ thread:start("Olááá", 10)
 
 Neste caso, `message` recebe `"Olááá"`, e `n` recebe `10`. Logo, quando chamamos `thread:start()`,  a mensagem é printada 10 vezes (em paralelo com a thread principal, é claro).
 
-Além de passarmos argumentos via inicialização da thread, podemos também transitar dados entre threads usando algo que o Love chama de `Channel` (canal). Um canal é como uma linha aberta de comunicação entre threads. Para *abrir* um canal, basta que você chame a função `love.thread.getChannel()` passando como argumento o nome do canal, que irá retornar um objeto do tipo `Channel`. Agora, com o canal em mãos, você pode enviar dados para outras threads ou ler os dados que elas enviaram facilmente. Isto pois os canais possuem os seguintes métodos:
+Além de passarmos argumentos via inicialização da thread, podemos também transitar dados entre threads usando algo que o Love chama de `Channel` (canal). Um canal é como uma linha aberta de comunicação entre threads. Para **abrir** um canal, basta que você chame a função `love.thread.getChannel()` passando como argumento o nome do canal, que irá retornar um objeto do tipo `Channel`. Agora, com o canal em mãos, você pode enviar dados para outras threads ou ler os dados que elas enviaram facilmente. Isto pois os canais possuem os seguintes métodos:
 
 - `Channel:push(value)`: enfileira um valor no canal. Por exemplo, dando `channel:push(63)` o valor 63 entrará no fim da fila de valores do canal;
 - `Channel:pop()`: remove o primeiro elemento enfileirado no canal e retorna seu valor. Retorna `nil` se o canal estiver vazio;
@@ -353,15 +353,15 @@ end
 
 Ao executarmos este programa, a nossa thread principal fica atualizando o valor do `timer` e do `lastSec`, sendo que toda vez que se passa 1 segundo ela envia o número de segundos que passaram para a outra thread através do canal "timer". Enquanto isso, a outra thread tem um loop que fica esperando mensagens serem passadas pelo canal "timer", e quando uma chega, ela printa este valor no terminal.
 
-E é basicamente assim que *Threads* funcionam no Love.
+E é basicamente assim que **Threads** funcionam no Love.
 
 Trabalhar com threads pode ser confuso às vezes (98% delas), mas elas nos oferecem algo que é extremamente valioso no desenvolvimento de jogos: velocidade. Como as threads rodam em paralelo (cada uma em um núcleo do seu processador), você pode aumentar e muito a performance do seu jogo (_perdi_) se usá-las corretamente. Contudo, com grandes poderes, vêm grandes responsabilidades, então se aprofunde um pouco mais no tema antes de sair abusando delas! Boa sorte.
 
 ## Palavras finais
 
-Você chegou ao fim do *Hiten Hagoromo* :D Meus sinceros parabéns pelo esforço e pela vontade de aprender. Este curso é um dos primeiros projetos da entidade Conway, da EACH-USP (e basicamente o primeiro a ser concluído), então com certeza ainda há muito a melhorar nele. Além disso, este foi o primeiro curso que eu - Jonyski - escrevi, então perdoe-me pelos erros ou confusões que lhe causei durante esta jornada.
+Você chegou ao fim do **Hiten Hagoromo** :D Meus sinceros parabéns pelo esforço e pela vontade de aprender. Este curso é um dos primeiros projetos da entidade Conway, da EACH-USP (e basicamente o primeiro a ser concluído), então com certeza ainda há muito a melhorar nele. Além disso, este foi o primeiro curso que eu - Jonyski - escrevi, então perdoe-me pelos erros ou confusões que lhe causei durante esta jornada.
 
-Inicialmente, eu propunha que nós iriamos criar um jogo completo como projeto final deste curso. Contudo, o jogo que fui criando com LOVE acabou crescendo demais em escopo, e no final das contas eu decidi tornar ele um projeto próprio. Logo, para que você tire proveito verdadeiro deste curso e do conhecimento obtido nele, eu lhe encorajo enormemente a ir *criar seu próprio jogo!* Não se preocupe com a perfeição, apenas saia daqui e vá se divertir criando algo novo.
+Inicialmente, eu propunha que nós iriamos criar um jogo completo como projeto final deste curso. Contudo, o jogo que fui criando com LOVE acabou crescendo demais em escopo, e no final das contas eu decidi tornar ele um projeto próprio. Logo, para que você tire proveito verdadeiro deste curso e do conhecimento obtido nele, eu lhe encorajo enormemente a ir **criar seu próprio jogo!** Não se preocupe com a perfeição, apenas saia daqui e vá se divertir criando algo novo.
 
 Novamente, obrigado por ler até aqui, vejo você em outro curso!!!
 
