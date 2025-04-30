@@ -200,6 +200,79 @@ Se você prestou atenção nos exemplos de código anteriores, este trecho não 
 
 Não entrarei nos detalhes da implementação da classe `Camera` ou das funções `renderWorld()` e `renderPlayers()`, pois isto exigiria muito tempo e não incrementaria muito em seu conhecimento sobre Love2D, mas vou anexar aqui uma imagem do split screen funcionando:
 
-![split screen funcionando](../../splitscreen.png)
+![split screen funcionando](../../assets/splitscreen.png)
 
 Na esquerda temos a câmera do personagem *Mush*, e na direita temos a câmera do personagem *Shroom*. Conforme eles se mexem, as câmeras os acompanham. É isso! :D
+
+## Sistemas de Partículas
+
+Algo muito bacana que o Love2D oferece em sua API é o *Sistema de Partículas* (_Particle Systems_). Isto se trata de uma forma de gerar efeitos dinâmicos com partículas para embelezar o seu jogo, tornando a criação de efeitos visuais de fumaça, fogo, _brilhinhos_ - entre outros - muito mais fácil.
+
+Como exemplo, vamos implementar aqui um efeito de "gás tóxico" sendo emitido de um dos personagens do jogo utilizando sistemas de partícula.
+
+Para criar um efeito de partículas, basta chamar chamar a função `love.graphics.newParticleSystem()` passando como argumentos uma *imagem* (que será a forma de nossas partículas) e um número (representando o limite de partículas simultâneas que seu sistema de partículas vai suportar). Assim:
+
+``` Lua
+particleImg = love.graphics.newImage("assets/sprites/circle.png")
+particles = love.graphics.newParticleSystem(particleImg, 250)
+```
+
+Após criar nosso sistema de partículas, iremos querer configurá-lo para que ele se comporte como esperamos. Por exemplo, você pode querer que seu sistema emita poucas ou MUITAS partículas por segundo. Você pode querer que as partículas subam ou descam. Você pode querer que elas girem, que elas mudem de tamanho enquanto se movem, que elas mudem de cor, enfim... Os sistemas de partícula são muito versáteis, e com os métodos que manipulam _Particle Systems_ você pode controlar tudo isso. Vou aqui listar alguns dos métodos mais importantes para se personalizar seu sistema de partículas e dizer para quê cada um deles serve (`ps` aqui é sua instância de sistema de partículas:
+
+- `ps:setParticleLifetime(min, max)`: define o tempo de vida das partículas. Ou seja, elas durarão no mínimo `min` segundos e no máximo `max` segundos. Este método é obrigatório para que o sistema de partículas seja usado. 
+- `ps:setEmissionRate(x)`: define quantas partículas por segundo serão emitidas pelo sistema. Este método também é obrigatório para que o sistema de partículas seja usado.
+- `ps:setPosition(x, y)`: define a posição do sistema de partículas.
+- `ps:setSizes(s1, s2, ...)`: define o tamanho (ou escala) das partículas ao longo da existência delas. Ou seja, elas começam com tamanho `s1`, crescem ou diminuem até chegar em `s2`, depois para `s3` e assim em diante. Sendo que estes argumentos são algum número entre 0 e 1, que definem a escala da partícula com base no tamanho original da imagem (se a imagem tinha tamanho `200x400` e `s1` é `0.5`, a partícula começará com tamanho `100x200`).
+- `ps:setSpin(min, max)`: define a velocidade de rotação das partículas para ser algo entre `min` e `max`. Os parâmetros devem ser passados em radianos. Ou seja, se `min` for `math.pi`, as partículas irão rotacionar em no mínimo 180° por segundo.
+- `ps:setColors(r1, g1, b1, a1, r2, g2, b2, a2)`: a cor que as partículas vão assumir ao longo de sua vida. Elas surgem com a cor em rgba obtida com os argumentos `r1`, `g1`, `b1`, `a1` e então transiciona para os próximos valores rgba e assim em diante.
+- `ps:setLinearAcceleration(xmin, ymin, xmax, ymax)`: define a aceleração das partículas na horizontal e na vertical. Valores negativos na horizontal acelerarão as partículas para a esquerda e valores negativos na vertical acelerarão as partículas para cima.
+- `ps:setDirection(rad)`: define a direção na qual as partículas serão emitidas. O argumento é passado como radianos. 0 radianos aponta para a direita, radianos positivos vão girando em sentido horário e radianos negativos vão girando em sentido anti-horário.
+- `ps:setSpread(rad)`: define a abertura da emissão de partículas. O argumento é passado em radianos. Ou seja, se você passar `math.pi/2` como argumento, as partículas serão emitidas em um "cone" com abertura de 90°.
+- `ps:setEmissionArea(mode, width, height)`: define a área em que as partículas podem surgir. Quanto maior a área, mais longe umas das outras as partículas surgirão, e quanto menor a área, mais concentradas elas estarão ao surgirem. O modo define como será a distribuição delas por esta área. Os modos mais comuns são o "normal" (distruibuição gaussiana) e a "uniform" (distribuição uniforme). 
+- `ps:setSpeed(min, max)`: define as velocidades mínimas e máximas que as partículas podem ter.
+
+Ok, pode parecer muito por agora, mas uma vez que você configura seu sistema de partículas, provavelmente poucas coisas irão mudar nele a partir de então. Agora vamos ver um exemplo prático.
+
+Para efeitos educativos, no jogo dos cogumelinhos, quando um cogumelo entra em modo de defesa (se esconde em seu chapéu), ele emite um odor tóxico. Esta toxina é sinalizada por um gás roxo e verde que sai do cogumelo. O código que cria o sistema de partículas deste gás está aqui:
+
+``` Lua
+particleImg = love.graphics.newImage("assets/sprites/circle.png") -- as partículas de gazes são círculos
+particles = love.graphics.newParticleSystem(particleImg, 250) -- teremos no máximo 250 partículas
+particles:setParticleLifetime(1, 3) -- elas durarão de 1 a 3 segundos
+particles:setEmissionRate(30) -- 30 partículas serão emitidas por segundo
+particles:setPosition(window.width / 2, window.height / 2) -- elas estão sendo emitidas no centro da tela, que é onde o personagem fica
+particles:setSizes(0.05, 0.2, 0.01) -- a partícula começa pequena, cresce um tanto, e depois diminui de novo
+particles:setSpin(math.pi) -- as partículas giram 180° por segundo
+particles:setColors(0.9, 0.2, 0.75, 0.85, 0.2, 0.9, 0.3, 0.5) -- começam roxas e terminam verdes
+particles:setLinearAcceleration(0, -20, 0, -60) -- particulas aceleram para cima
+particles:setDirection(-math.pi/2) -- partículas lançadas para cima
+particles:setSpread(math.pi/4) -- com abertura de 45 graus
+particles:setEmissionArea("normal", 25, 20) -- surgem em uma área de 25px por 20px
+particles:setSpeed(10, 50) -- velocidade mínima 10 e máxima 50
+```
+
+Belezura, tudo configurado e nos conformes, mas como nós podemos rodar nosso sistema de partículas e renderizar ele na tela? Bom, esse processo tem alguns passos. Primeiro, quando nós quisermos ativar ou desativar o sistema, chamamos respectivamente os métodos `particles:start()` e `particles:stop()`. Além disso, precisamos executar o método `particles:update(dt)` dentro da função `love.update()`, para que o sistema calcule a posição, o tamanho, a rotação e a cor de cada partícula. Por fim, podemos desenhar nossas partículas do jeito usual: através da função `love.graphics.draw()`, passando o sistema de partículas como argumento.
+
+Em suma, o que teremos em cada parte do código é:
+
+``` Lua
+-- onde você quiser que o sistema começe a emitir partículas
+particles:start()
+
+-- onde você quiser que o sistema pare de emitir partículas
+particles:stop()
+
+-- na função love.update(dt), lembre de atualizar o sistema
+function love.update(dt)
+	particles:update(dt)
+end
+
+-- na função love.draw() nós desenhamos as partículas
+function love.draw()
+	love.graphics.draw(particles)
+end
+```
+
+E é isso! O efeito final, no caso do exemplo de agora a pouco (o gás tóxico roxo e verde), ficou assim:
+
+![efeito de partículas](../../assets/particle_system.png)
