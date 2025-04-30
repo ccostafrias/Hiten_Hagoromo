@@ -213,8 +213,8 @@ Como exemplo, vamos implementar aqui um efeito de "gás tóxico" sendo emitido d
 Para criar um efeito de partículas, basta chamar chamar a função `love.graphics.newParticleSystem()` passando como argumentos uma *imagem* (que será a forma de nossas partículas) e um número (representando o limite de partículas simultâneas que seu sistema de partículas vai suportar). Assim:
 
 ``` Lua
-particleImg = love.graphics.newImage("assets/sprites/circle.png")
-particles = love.graphics.newParticleSystem(particleImg, 250)
+local particleImg = love.graphics.newImage("assets/sprites/circle.png")
+local particles = love.graphics.newParticleSystem(particleImg, 250)
 ```
 
 Após criar nosso sistema de partículas, iremos querer configurá-lo para que ele se comporte como esperamos. Por exemplo, você pode querer que seu sistema emita poucas ou MUITAS partículas por segundo. Você pode querer que as partículas subam ou descam. Você pode querer que elas girem, que elas mudem de tamanho enquanto se movem, que elas mudem de cor, enfim... Os sistemas de partícula são muito versáteis, e com os métodos que manipulam _Particle Systems_ você pode controlar tudo isso. Vou aqui listar alguns dos métodos mais importantes para se personalizar seu sistema de partículas e dizer para quê cada um deles serve (`ps` aqui é sua instância de sistema de partículas:
@@ -236,8 +236,8 @@ Ok, pode parecer muito por agora, mas uma vez que você configura seu sistema de
 Para efeitos educativos, no jogo dos cogumelinhos, quando um cogumelo entra em modo de defesa (se esconde em seu chapéu), ele emite um odor tóxico. Esta toxina é sinalizada por um gás roxo e verde que sai do cogumelo. O código que cria o sistema de partículas deste gás está aqui:
 
 ``` Lua
-particleImg = love.graphics.newImage("assets/sprites/circle.png") -- as partículas de gazes são círculos
-particles = love.graphics.newParticleSystem(particleImg, 250) -- teremos no máximo 250 partículas
+local particleImg = love.graphics.newImage("assets/sprites/circle.png") -- as partículas de gazes são círculos
+local particles = love.graphics.newParticleSystem(particleImg, 250) -- teremos no máximo 250 partículas
 particles:setParticleLifetime(1, 3) -- elas durarão de 1 a 3 segundos
 particles:setEmissionRate(30) -- 30 partículas serão emitidas por segundo
 particles:setPosition(window.width / 2, window.height / 2) -- elas estão sendo emitidas no centro da tela, que é onde o personagem fica
@@ -276,3 +276,95 @@ end
 E é isso! O efeito final, no caso do exemplo de agora a pouco (o gás tóxico roxo e verde), ficou assim:
 
 ![efeito de partículas](../../assets/particle_system.png)
+
+## Threads
+
+Para podermos executar códigos em *paralelo* (e não em concorrência, como faziamos com as _co-rotinas_) o Love nos oferece o módulo `love.thread`.
+
+Para criarmos uma *thread* a partir de um arquivo `.lua`, basta que chamemos a função `love.thread.newThread()` passando como argumento o caminho para o arquivo. Esta função nos retornará um objeto do tipo `Thread`, que nós podemos então botar para rodar chamando o método `Thread:start()`, assim:
+
+``` Lua
+thread = love.thread.newThread("parallel_task.lua")
+thread:start()
+```
+
+Se você quiser passar alguns dados iniciais para a thread que está criando, você pode passá-los como argumentos para a `thread:start()`, e então capturar eles como variáveis comuns no arquivo que contém o código da thread, como no seguinte exemplo:
+
+``` Lua
+-- ARQUIVO: parallel_task.lua
+local message, n = ...
+
+for i = 1, n do
+	print(message)
+end
+
+-- ARQUIVO: main.lua
+thread = love.thread.newThread("parallel_task.lua")
+thread:start("Olááá", 10)
+```
+
+Neste caso, `message` recebe `"Olááá"`, e `n` recebe `10`. Logo, quando chamamos `thread:start()`,  a mensagem é printada 10 vezes (em paralelo com a thread principal, é claro).
+
+Além de passarmos argumentos via inicialização da thread, podemos também transitar dados entre threads usando algo que o Love chama de `Channel` (canal). Um canal é como uma linha aberta de comunicação entre threads. Para *abrir* um canal, basta que você chame a função `love.thread.getChannel()` passando como argumento o nome do canal, que irá retornar um objeto do tipo `Channel`. Agora, com o canal em mãos, você pode enviar dados para outras threads ou ler os dados que elas enviaram facilmente. Isto pois os canais possuem os seguintes métodos:
+
+- `Channel:push(value)`: enfileira um valor no canal. Por exemplo, dando `channel:push(63)` o valor 63 entrará no fim da fila de valores do canal;
+- `Channel:pop()`: remove o primeiro elemento enfileirado no canal e retorna seu valor. Retorna `nil` se o canal estiver vazio;
+- `Channel:peek()`: lê o primeiro elemento enfileirado no canal, mas - diferentemente do `pop()` - não remove ele da fila. Também retorna `nil` se o canal estiver vazio;
+- `Channel:demand()`: funciona como o `pop()`, mas espera alguma mensagem chegar no canal se ele estiver vazio;
+- `Channel:getCount()`: retorna o número de valores que estão atualmente no canal.
+
+Para esse conceito ficar mais claro, vamos ver um exemplo simples, no qual a cada segundo a thread principal coloca o número de segundos decorridos em um canal chamado "timer", e então, uma outra thread lê este canal e printa os valores que chegam nele.
+
+``` Lua
+-- ARQUIVO: thread.lua
+local n = ... -- variável recebida de outra thread
+for i = 1, n do
+	-- esperando e lendo a próxima mensagem que surgir no canal "timer"
+	local c = love.thread.getChannel("timer"):demand()
+	print(c)
+end
+
+-- ARQUIVO: main.lua
+local thread
+local timer = 0 -- um contador de segundos
+local lastSec = 0 -- guarda o último segundo redondo que passou
+
+function love.load()
+	-- criando e inicializando nossa thread
+    thread = love.thread.newThread("thread.lua")
+    thread:start(10)
+end
+
+function love.update( dt )
+	-- atualizando o timer
+    timer = timer + dt
+    -- se já tiver passado 1 segundo desde a última mensagem, enviar uma nova
+    if timer - lastSec > 1 then
+    	-- enviando a mensagem pelo canal "timer"
+        love.thread.getChannel("timer"):push(math.floor(timer))
+        lastSec = math.floor(timer)
+    end
+end
+
+function love.draw()
+	love.graphics.clear(0, 0, 0, 1)
+end
+```
+
+Ao executarmos este programa, a nossa thread principal fica atualizando o valor do `timer` e do `lastSec`, sendo que toda vez que se passa 1 segundo ela envia o número de segundos que passaram para a outra thread através do canal "timer". Enquanto isso, a outra thread tem um loop que fica esperando mensagens serem passadas pelo canal "timer", e quando uma chega, ela printa este valor no terminal.
+
+E é basicamente assim que *Threads* funcionam no Love.
+
+Trabalhar com threads pode ser confuso às vezes (98% delas), mas elas nos oferecem algo que é extremamente valioso no desenvolvimento de jogos: velocidade. Como as threads rodam em paralelo (cada uma em um núcleo do seu processador), você pode aumentar e muito a performance do seu jogo (_perdi_) se usá-las corretamente. Contudo, com grandes poderes, vêm grandes responsabilidades, então se aprofunde um pouco mais no tema antes de sair abusando delas! Boa sorte.
+
+## Palavras finais
+
+Você chegou ao fim do *Hiten Hagoromo* :D Meus sinceros parabéns pelo esforço e pela vontade de aprender. Este curso é um dos primeiros projetos da entidade Conway, da EACH-USP (e basicamente o primeiro a ser concluído), então com certeza ainda há muito a melhorar nele. Além disso, este foi o primeiro curso que eu - Jonyski - escrevi, então perdoe-me pelos erros ou confusões que lhe causei durante esta jornada.
+
+Inicialmente, eu propunha que nós iriamos criar um jogo completo como projeto final deste curso. Contudo, o jogo que fui criando com LOVE acabou crescendo demais em escopo, e no final das contas eu decidi tornar ele um projeto próprio. Logo, para que você tire proveito verdadeiro deste curso e do conhecimento obtido nele, eu lhe encorajo enormemente a ir *criar seu próprio jogo!* Não se preocupe com a perfeição, apenas saia daqui e vá se divertir criando algo novo.
+
+Novamente, obrigado por ler até aqui, vejo você em outro curso!!!
+
+``` Lua
+end
+```
