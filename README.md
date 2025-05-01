@@ -42,3 +42,4 @@ Faço aqui meus agradecimentos especiais a quem colaborou com o desenvolvimento 
 
 - Yukina (Mari): Pelas correções gramaticais e pelo apoio no geral, manja muito <3.
 - Camila: Pelos feedbacks muito sensatos, sem eles o projeto estaria bem mais capenga.
+- Todos que fizeram, estão fazendo ou farão o curso: por acreditar no projeto e dedicar seu tempo a ele.
