@@ -81,9 +81,9 @@ Antes de eu explicar cada um dos tipos eu preciso deixar algo claro: lua é uma 
 
 ``` Lua
 var = 10 -- declarando var como Number
-print(a)
+print(var)
 var = "Bom dia" -- mudando var para String
-print(a) -- printa Bom dia sem problemas
+print(var) -- printa Bom dia sem problemas
 ```
 
 **OBS: comentários em lua são feitos com --**
