@@ -62,33 +62,20 @@ local function copy_map(dest)
 	end
 end
 
+local moves = {{-1, -1}, {0, -1}, {1, -1}, {1, 0}, {1, 1}, {0, 1}, {-1, 1}, {-1, 0}}
+
 -- conta quantos vizinhos de uma dada célula são terra (1)
 local function count_neighbors(tiles, height, width, i, j)
 	local neighbors = 0
-	if i > 1 then
-		if j > 1 then
-			neighbors = neighbors + tiles[i-1][j-1]--> vizinho superior esquerdo
-		end
-		neighbors = neighbors + tiles[i-1][j]--> vizinho superior
-		if j < width then
-			neighbors = neighbors + tiles[i-1][j+1]--> vizinho superior direito
-		end
-	end
-	if j < width then
-		neighbors = neighbors + tiles[i][j+1]--> vizinho direito
-		if i < height then
-			neighbors = neighbors + tiles[i+1][j+1]--> vizinho inferior direito
+	for m = 1, #moves do
+		local newJ = j + moves[m][1]
+		local newI = i + moves[m][2]
+
+		if newJ > 1 and newJ < width and newI > 1 and newI < height then
+			neighbors = neighbors + tiles[newI][newJ]
 		end
 	end
-	if i < height then
-		neighbors = neighbors + tiles[i+1][j]--> vizinho inferior
-		if j > 1 then
-			neighbors = neighbors + tiles[i+1][j-1]--> vizinho infeior esquerdo
-		end
-	end
-	if j > 1 then
-		neighbors = neighbors + tiles[i][j-1]--> vizinho esquerdo
-	end
+
 	return neighbors
 end
 
@@ -229,7 +216,6 @@ populate_with_tile(grass, 0.1, 0.4, 5)
 populate_with_tile(mountain, 0.02, 0.35, 3)
 spawn_temples(0.05)
 spawn_trees(0.6)
-
 
 print("\n--------------------------------------------------------\n")
 print_map()
