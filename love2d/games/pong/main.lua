@@ -1,45 +1,45 @@
-require "player"
-require "ball"
-require "opponent"
+local Game = require("scenes.game")
+local Menu = require("scenes.menu")
+local GameState = require("gameState")
+local SM = require("sceneManager")
+
+local sm
 
 function love.keypressed(key, scancode, isrepeat)
-  Ball:keys_pressed()
-
+  if GameState.state == "menu" then
+    Menu:keypressed(key)
+  elseif GameState.state == "game" then
+    Game:keypressed(key)
+  end
 	if key == "escape" then
 		love.event.quit()
 	end
 end
 
 function love.load()
-  Player:load()
-  Opponent:load()
-  Ball:load()
+  fontTitle = love.graphics.newFont('fonts/PressStart2P-Regular.ttf', 20)
+  fontGame = love.graphics.newFont('fonts/PressStart2P-Regular.ttf', 30)
+  fontMenu = love.graphics.newFont('fonts/PressStart2P-Regular.ttf', 50)
+
+  sm = SM("scenes", {"Game", "Menu"})
+
+  GameState:load()
+  Menu:load()
+  Game:load()
 end
 
 function love.update(dt)
-  Player:update(dt)
-  Opponent:update(dt)
-  Ball:update(dt)
+  if GameState.state == "menu" then
+    Menu:update(dt)
+  elseif GameState.state == "game" then
+    Game:update(dt)
+  end
 end
 
 function love.draw()
-	-- limpando a tela com um azul acinzentado
-	love.graphics.clear(0.25, 0.25, 0.5)
-	
-  Opponent:draw()
-  Player:draw()
-  Ball:draw()
-end
-
-function checkCollision(a, b)
-  if a.x < b.x + b.width and -- esquerda de A passou a direita de B
-     a.x + a.width > b.x and -- direita de A passou a esquerda de B
-     a.y < b.y + b.height and -- topo de A passou a base de B
-     a.y + a.height > b.y then -- base de A passou o topo de B
-     
-     return true
-  else
-    return false
+  if GameState.state == "menu" then
+    Menu:draw()
+  elseif GameState.state == "game" then
+    Game:draw()
   end
-  
 end

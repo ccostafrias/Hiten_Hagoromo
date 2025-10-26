@@ -1,23 +1,29 @@
-Ball = {}
+local Class = require("class")
+local GameState = require("gameState")
+local Ball = Class:derive("Ball")
 
-function Ball:reset(side)
+function Ball:reset(direction)
   self.x = love.graphics.getWidth() / 2
   self.y = love.graphics.getHeight() / 2
-  self.xVel = self.speed * side
+  self.xVel = self.speed * direction
   self.yVel = 0
+  self.multiplier = 1
 end
 
-function Ball:keys_pressed()
-  if love.keyboard.isDown("r") then
+function Ball:keypressed(key)
+  if key == "r" then
     self:reset(-1)
   end
 end
 
-function Ball:load()
-  self.radius = 10
-  self.width = 20
-  self.height = 20
-  self.speed = 400
+function Ball:new(speed)
+  self.image = love.graphics.newImage("assets/ball.png")
+  self.width = self.image:getWidth()
+  self.height = self.image:getHeight()
+  self.multiplier = 1
+  self.yMult = 5
+
+  self.speed = speed
   self:reset(-1)
 end
 
@@ -27,27 +33,18 @@ function Ball:update(dt)
 end
 
 function Ball:move(dt)
-  self.x = self.x + self.xVel * dt
-  self.y = self.y + self.yVel * dt
+  self.x = self.x + self.xVel * self.multiplier * dt
+  self.y = self.y + self.yVel * self.multiplier * dt
 end
 
 function Ball:collide()
-  if checkCollision(self, Player) then
-    self.xVel = self.speed
+  self:collidePlayer()
+  self:collideOpponent()
+  self:collideWall()
+  self:score()
+end
 
-    local middleBall = self.y + self.height / 2
-    local middlePlayer = Player.y + Player.height / 2
-    local collisionPosition = middleBall - middlePlayer
-    self.yVel = collisionPosition * 5
-  elseif checkCollision(self, Opponent) then
-    self.xVel = -self.speed
-
-    local middleBall = self.y + self.height / 2
-    local middleOpponent = Opponent.y + Opponent.height / 2
-    local collisionPosition = middleBall - middleOpponent
-    self.yVel = collisionPosition * 5
-  end
-
+function Ball:collideWall()
   if self.y < 0 then
     self.y = 0
     self.yVel = -self.yVel
@@ -55,16 +52,44 @@ function Ball:collide()
     self.y = love.graphics.getHeight() - self.height
     self.yVel = -self.yVel
   end
+end
 
+function Ball:collidePlayer()
+  if checkCollision(self, GameState.player) then
+    self.xVel = self.speed
+
+    local middleBall = self.y + self.height / 2
+    local middlePlayer = GameState.player.y + GameState.player.height / 2
+    local collisionPosition = middleBall - middlePlayer
+    self.yVel = collisionPosition * self.yMult
+    self.multiplier = self.multiplier + .05
+  end
+end
+
+function Ball:collideOpponent()
+  if checkCollision(self, GameState.opponent) then
+    self.xVel = -self.speed
+
+    local middleBall = self.y + self.height / 2
+    local middleOpponent = GameState.opponent.y + GameState.opponent.height / 2
+    local collisionPosition = middleBall - middleOpponent
+    self.yVel = collisionPosition * self.yMult
+    self.multiplier = self.multiplier * 1.1
+  end
+end
+
+function Ball:score()
   if self.x < 0 then
     self:reset(1)
-    Opponent.score = Opponent.score + 1
+    GameState.opponent.score = GameState.opponent.score + 1
   elseif self.x + self.width > love.graphics.getWidth() then
     self:reset(-1)
-    Player.score = Player.score + 1
+    GameState.player.score = GameState.player.score + 1
   end
 end
 
 function Ball:draw()
-  love.graphics.circle("fill", self.x, self.y, self.radius)
+  love.graphics.draw(self.image, self.x, self.y)
 end
+
+return Ball

@@ -8,6 +8,10 @@ local function calcula_determinante_3x3(a, b, c)
 end
 
 function verify_mouse_inside()
+  -- α1.Xa + α2.Xb + α3.Xc = Xp
+  -- α1.Ya + α2.Yb + α3.Yc = Yp
+  -- α1.1  + α2.1  + α3.1  = 1
+
   local aCol   = {Triangle.vertices[1], Triangle.vertices[2], 1}
   local bCol   = {Triangle.vertices[3], Triangle.vertices[4], 1}
   local cCol   = {Triangle.vertices[5], Triangle.vertices[6], 1}
