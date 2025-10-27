@@ -1,4 +1,4 @@
-local Class = require("class")
+local Class = require("Class")
 local Paddle = Class:derive("Paddle")
 
 function Paddle:new(startX, img, speed)

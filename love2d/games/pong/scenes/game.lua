@@ -1,20 +1,31 @@
-local Background = require("background")
-local Ball = require("ball")
-local Player = require("player")
-local GameState = require("gameState")
-local Timer = require("timer")
+local Background = require("Background")
+local Ball = require("Ball")
+local Player = require("Player")
+local GameState = require("GameState")
+local Timer = require("Timer")
+local Scene = require("Scene")
 
-local Game = {}
+local Game = Scene:derive("Game")
 
 function Game:keypressed(key)
   GameState.ball:keypressed(key)
+
+  if key == "m" then
+    self.scene_mgr:switch("Menu")
+  end
 end
 
-function Game:load()
-  load_level(GameState.level)
+function Game:new(scene_mgr)
+  self.super:new(scene_mgr)
 end
 
-function load_level(level)
+function Game:enter()
+  GameState.level = 1
+  GameState:set_opponents()
+  start_level(GameState.level)
+end
+
+function start_level(level)
   if (GameState.player == nil) then 
     GameState.player = Player(50, 1, 300)
   else
@@ -27,13 +38,11 @@ function load_level(level)
     GameState.ball:reset(-1)
   end
 
-  if (GameState.opponent == nil) then 
-    GameState:set_opponents()
-  end
-
   GameState.opponent = GameState.opponents[level]
-  Background:load()
+  GameState.opponent.ball = GameState.ball
+  GameState.opponent:reset()
 
+  Background:load()
 end
 
 function Game:update(dt)
@@ -68,7 +77,7 @@ function verifyScore()
       Timer:after(1, function ()
         GameState.status = "playing"
         GameState.level = GameState.level + 1
-        load_level(GameState.level)
+        start_level(GameState.level)
       end)
     else
       print("ACABOU PORRA")

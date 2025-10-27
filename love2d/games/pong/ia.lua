@@ -1,4 +1,4 @@
-local Paddle = require("paddle")
+local Paddle = require("Paddle")
 local IA = Paddle:derive("IA")
 
 function IA:new(startX, img, speed, sx, sy, opts, ball)

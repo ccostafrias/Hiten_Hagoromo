@@ -26,4 +26,15 @@ function Class:get_type()
   return self.type
 end
 
+function Class:is(class_type)
+  local base = self
+  while base do
+    if base.type == class_type then return true end
+    base = base.super
+    
+  end
+  
+  return false
+end
+
 return Class

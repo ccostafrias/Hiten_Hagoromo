@@ -1,6 +1,8 @@
-local Class = require("class")
-local GameState = require("gameState")
+local Class = require("Class")
+local GameState = require("GameState")
 local Ball = Class:derive("Ball")
+
+local particleEmitter
 
 function Ball:reset(direction)
   self.x = love.graphics.getWidth() / 2
@@ -8,6 +10,7 @@ function Ball:reset(direction)
   self.xVel = self.speed * direction
   self.yVel = 0
   self.multiplier = 1
+  particleEmitter:reset()
 end
 
 function Ball:keypressed(key)
@@ -17,6 +20,8 @@ function Ball:keypressed(key)
 end
 
 function Ball:new(speed)
+  start_particle()
+
   self.image = love.graphics.newImage("assets/ball.png")
   self.width = self.image:getWidth()
   self.height = self.image:getHeight()
@@ -30,6 +35,9 @@ end
 function Ball:update(dt)
   self:move(dt)
   self:collide()
+
+  particleEmitter:update(dt)
+  particleEmitter:setPosition(self.x + self.width/2, self.y + self.height/2) -- move o emitter junto com a bola, dando o efeito de rastro
 end
 
 function Ball:move(dt)
@@ -89,7 +97,18 @@ function Ball:score()
 end
 
 function Ball:draw()
+  love.graphics.draw(particleEmitter)
   love.graphics.draw(self.image, self.x, self.y)
+end
+
+function start_particle()
+  local particleImg = love.graphics.newImage("assets/particle.png")
+  particleEmitter = love.graphics.newParticleSystem(particleImg, 100)
+
+  particleEmitter:setParticleLifetime(1, 1) -- dura exatamente 1 segundo
+  particleEmitter:setEmissionRate(15) -- emite 15 partículas por segundo
+  particleEmitter:setSizes(5, 0) -- varia de 5 vezes o tamanho original até 0
+  particleEmitter:setColors(1, 1, 1, 1, 1, 1, 1, 0) -- faz um fade, do branco ao transparente
 end
 
 return Ball

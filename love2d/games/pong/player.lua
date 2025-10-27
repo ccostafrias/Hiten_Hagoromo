@@ -1,4 +1,4 @@
-local Paddle = require("paddle")
+local Paddle = require("Paddle")
 local Player = Paddle:derive("Player")
 
 function Player:move(dt)
