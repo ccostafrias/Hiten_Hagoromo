@@ -6,18 +6,24 @@ function Band:play()
 end
 
 RockBand = {}
-setmetatable(RockBand, Band)
 RockBand.__index = RockBand
 
-function RockBand.new(name)
-	local instance = setmetatable({}, RockBand)
-	instance.name = name
-	return instance
+function Band:__call(...)
+  local instance = setmetatable({}, self)
+  instance:new(...)
+  
+  return instance
 end
 
-MP = RockBand.new("Major Parkinson")
+function RockBand:new(name)
+	self.name = name
+end
+
+setmetatable(RockBand, Band)
+
+MP = RockBand("Major Parkinson")
 MP:play() -- output: Major Parkinson starts playing a song
-RHCP = RockBand.new("Red Hot Chilli Peppers")
+RHCP = RockBand("Red Hot Chilli Peppers")
 RHCP:play() -- output: Red Hot Chilli Peppers starts playing a song
-Grilo = RockBand.new("O Grilo")
+Grilo = RockBand("O Grilo")
 Grilo:play() -- output: O Grilo starts playing a song
